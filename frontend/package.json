@@ -1,7 +1,11 @@
 {
   "name": "frontend",
   "version": "1.0.0",
+<<<<<<< HEAD
   "description": "DB_project frontend",
+=======
+  "description": "DB_project_frontend",
+>>>>>>> 4eb273df08bbd1334a7522e747c06a71aa11caec
   "author": "",
   "private": true,
   "scripts": {

@@ -11,7 +11,11 @@ var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+<<<<<<< HEAD
 app.set('view engine', 'pug');
+=======
+app.set('view engine', 'jade');
+>>>>>>> 4eb273df08bbd1334a7522e747c06a71aa11caec
 
 app.use(logger('dev'));
 app.use(express.json());
