@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import LoginPage from '@/components/LoginPage'
+import MainPage from '@/components/MainPage'
 import AdminPage from '@/components/AdminPage'
 import AssessorPage from '@/components/AssessorPage'
 import SubmitteePage from '@/components/SubmitteePage'
@@ -8,11 +8,12 @@ import SubmitteePage from '@/components/SubmitteePage'
 Vue.use(Router)
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
-      name: 'LoginPage',
-      component: LoginPage
+      name: 'MainPage',
+      component: MainPage
     },
     {
       path: '/admin',

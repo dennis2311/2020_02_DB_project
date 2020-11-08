@@ -1,7 +1,7 @@
 <template>
 <div>
     <h1>2020-02 DB project</h1>
-    <h3>Choose your role and log in for service \n</h3>
+    <h3>Choose your role and login for service</h3>
 
     <router-link to="/admin"> Administrator</router-link> |
     <router-link to="/assessor"> Assessor</router-link> |
