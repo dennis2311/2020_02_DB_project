@@ -1,0 +1,40 @@
+[
+  {
+    "id": 1,
+    "username": "apple",
+    "password": "red",
+    "role": "admin",
+    "profile":"https://avada.theme-fusion.com/wp-content/uploads/2019/07/person_sample_4.jpg"
+  },
+  {
+    "id": 2,
+    "username": "snow",
+    "password": "white",
+    "role": "assessor",
+    "profile":"https://avada.theme-fusion.com/wp-content/uploads/2019/07/person_sample_2.jpg"
+  },{
+    "id": 3,
+    "username": "rabbit",
+    "password": "pink",
+    "role": "submittee",
+    "profile": "https://avada.theme-fusion.com/wp-content/uploads/2019/07/person_sample_3.jpg"
+  },{
+    "id": 4,
+    "username": "banana",
+    "password": "yellow",
+    "role": "admin",
+    "profile": "https://www.cbre.us/-/media/cbre/countryunitedstates/media/images/profiles/p/h/i/phillip-sample.jpg"
+  },{
+    "id": 5,
+    "username": "rain",
+    "password": "blue",
+    "role": "assessor",
+    "profile":"https://media.capc.org/images/Phil-Rodgers.2e16d0ba.fill-235x235.jpg"
+  },{
+    "id": 6,
+    "username": "wolf",
+    "password": "gray",
+    "role": "submittee",
+    "profile":"https://www.templatebeats.com/files/images/JJ2.png"
+  }
+]

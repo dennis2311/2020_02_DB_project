@@ -4,6 +4,8 @@ import MainPage from '@/components/MainPage'
 import AdminPage from '@/components/AdminPage'
 import AssessorPage from '@/components/AssessorPage'
 import SubmitteePage from '@/components/SubmitteePage'
+import UserIndexPage from '@/components/UserIndexPage'
+import UserDetailPage from '@/components/UserDetailPage'
 
 Vue.use(Router)
 
@@ -29,6 +31,16 @@ export default new Router({
       path: '/submittee',
       name: 'SubmitteePage',
       component: SubmitteePage
-    }
+    },
+    {
+      path: '/users',
+      name: 'UserIndexPage',
+      component: UserIndexPage
+    },
+    {
+      path: '/users/:id',
+      name: 'UserDetailPage',
+      component: UserDetailPage
+    },
   ]
 })
