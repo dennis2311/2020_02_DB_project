@@ -4,6 +4,7 @@ var users = require('../userdata.json');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+  console.log("Users page request");
   res.send(users);
 });
 

@@ -6,6 +6,7 @@ import AssessorPage from '@/components/AssessorPage'
 import SubmitteePage from '@/components/SubmitteePage'
 import UserIndexPage from '@/components/UserIndexPage'
 import UserDetailPage from '@/components/UserDetailPage'
+import ShowUserPage from '@/components/ShowUserPage'
 
 Vue.use(Router)
 
@@ -42,5 +43,10 @@ export default new Router({
       name: 'UserDetailPage',
       component: UserDetailPage
     },
+    {
+      path : '/showUsers',
+      name: 'ShowUsersPage',
+      component: ShowUserPage
+    }
   ]
 })
