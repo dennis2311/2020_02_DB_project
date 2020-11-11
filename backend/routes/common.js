@@ -1,19 +1,40 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next){
-    console.log("common.js");
-    res.send({msg:"firstpage"});
+const ADMIN = 'admin';
+const ASSESSOR = 'assessor';
+const SUBMITTEE = 'submittee';
+
+router.post('/', function(req, res, next){
+    const user = req.body.user;
+    console.log(user.userid);
+
+    // TODO
+    // DB connection here
+
+    res.json({
+        role : ADMIN
+    })
+
 })
 
-router.get('/createaccount', function(req, res, next){
-    console.log("createaccount");
-    res.send({msg:"create your account"});
+router.post('/createaccount', function(req, res, next){
+    const user = {
+        'userid' : req.body.user.userid,
+        'name': req.body.user.name,
+        'password': req.body.user.password
+    };
+
+    // TODO
+    // DB connection here
+
+    res.json({
+        success: true,
+        message: 'Account created successfully.\nPlease login for service.'
+    })
 })
 
 router.get('/findaccount', function(req, res, next){
-    console.log("find ID/password");
-    res.send({msg:"forgot your account?"});
 })
 
 module.exports = router;

@@ -1,6 +1,7 @@
 <template>
 <div>
     <h1>Administrator Page</h1>
+    <button v-on:click="goMain">goMain</button>
     <router-view/>
 </div>
     
@@ -8,7 +9,13 @@
 
 <script>
 export default {
-    name:'AdminPage'
+    name:'AdminPage',
+    methods:{
+        goMain: function(e){
+            e.preventDefault();
+            this.$router.push('/');
+        }
+    }
 }
 </script>
 

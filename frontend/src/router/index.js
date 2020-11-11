@@ -10,9 +10,12 @@ import AdminPage from '@/components/admin/AdminPage'
 import AssessorPage from '@/components/assessor/AssessorPage'
 
 import SubmitteePage from '@/components/submittee/SubmitteePage'
-// import UserIndexPage from '@/components/UserIndexPage'
-// import UserDetailPage from '@/components/UserDetailPage'
-// import ShowUserPage from '@/components/ShowUserPage'
+
+
+// under : example routes
+import UserIndexPage from '@/components/UserIndexPage'
+import UserDetailPage from '@/components/UserDetailPage'
+import ShowUserPage from '@/components/ShowUserPage'
 
 Vue.use(Router)
 
@@ -54,20 +57,22 @@ export default new Router({
     },
 
     
-    // {
-    //   path: '/users',
-    //   name: 'UserIndexPage',
-    //   component: UserIndexPage
-    // },
-    // {
-    //   path: '/users/:id',
-    //   name: 'UserDetailPage',
-    //   component: UserDetailPage
-    // },
-    // {
-    //   path : '/showUsers',
-    //   name: 'ShowUsersPage',
-    //   component: ShowUserPage
-    // }
+
+    // under : example routes
+    {
+      path: '/users',
+      name: 'UserIndexPage',
+      component: UserIndexPage
+    },
+    {
+      path: '/users/:id',
+      name: 'UserDetailPage',
+      component: UserDetailPage
+    },
+    {
+      path : '/showUsers',
+      name: 'ShowUsersPage',
+      component: ShowUserPage
+    }
   ]
 })
