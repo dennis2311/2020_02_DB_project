@@ -1,6 +1,7 @@
 <template>
 <div>
     <h1>Administrator Page</h1>
+    <router-view/>
 </div>
     
 </template>

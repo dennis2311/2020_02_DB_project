@@ -1,6 +1,5 @@
 <template>
 <div>
-    <h1>2020-02 DB project</h1>
     <h3>Please login for service</h3>
 
     <h4>or</h4>

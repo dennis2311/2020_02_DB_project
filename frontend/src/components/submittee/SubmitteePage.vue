@@ -1,6 +1,7 @@
 <template>
 <div>
     <h1>Submittee Page</h1>
+    <router-view/>
 </div>
     
 </template>
