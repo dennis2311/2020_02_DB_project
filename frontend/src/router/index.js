@@ -1,12 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import MainPage from '@/components/MainPage'
-import AdminPage from '@/components/AdminPage'
-import AssessorPage from '@/components/AssessorPage'
-import SubmitteePage from '@/components/SubmitteePage'
-import UserIndexPage from '@/components/UserIndexPage'
-import UserDetailPage from '@/components/UserDetailPage'
-import ShowUserPage from '@/components/ShowUserPage'
+
+import LoginPage from '@/components/common/LoginPage'
+import CreateAccountPage from '@/components/common/CreateAccountPage'
+import FindAccountPage from '@/components/common/FindAccountPage'
+
+import AdminPage from '@/components/admin/AdminPage'
+
+import AssessorPage from '@/components/assessor/AssessorPage'
+
+import SubmitteePage from '@/components/submittee/SubmitteePage'
+// import UserIndexPage from '@/components/UserIndexPage'
+// import UserDetailPage from '@/components/UserDetailPage'
+// import ShowUserPage from '@/components/ShowUserPage'
 
 Vue.use(Router)
 
@@ -15,38 +21,53 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'MainPage',
-      component: MainPage
+      name: 'LoginPage',
+      component: LoginPage
     },
+    {
+      path: '/createaccount',
+      name: 'CreateAccountPage',
+      component: CreateAccountPage
+    },
+    {
+      path: '/findaccount',
+      name: 'FindAccountPage',
+      component: FindAccountPage
+    },
+
     {
       path: '/admin',
       name: 'AdminPage',
       component: AdminPage
     },
+
     {
       path: '/assessor',
       name: 'AssessorPage',
       component: AssessorPage
     },
+    
     {
       path: '/submittee',
       name: 'SubmitteePage',
       component: SubmitteePage
     },
-    {
-      path: '/users',
-      name: 'UserIndexPage',
-      component: UserIndexPage
-    },
-    {
-      path: '/users/:id',
-      name: 'UserDetailPage',
-      component: UserDetailPage
-    },
-    {
-      path : '/showUsers',
-      name: 'ShowUsersPage',
-      component: ShowUserPage
-    }
+
+    
+    // {
+    //   path: '/users',
+    //   name: 'UserIndexPage',
+    //   component: UserIndexPage
+    // },
+    // {
+    //   path: '/users/:id',
+    //   name: 'UserDetailPage',
+    //   component: UserDetailPage
+    // },
+    // {
+    //   path : '/showUsers',
+    //   name: 'ShowUsersPage',
+    //   component: ShowUserPage
+    // }
   ]
 })

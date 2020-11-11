@@ -1,17 +1,27 @@
 <template>
 <div>
     <h1>2020-02 DB project</h1>
-    <h3>Choose your role and login for service</h3>
+    <h3>Please login for service</h3>
 
-    <router-link to="/admin"> Administrator</router-link> |
-    <router-link to="/assessor"> Assessor</router-link> |
-    <router-link to="/submittee"> Submittee</router-link>
+    <h4>or</h4>
+
+    <router-link to='/createaccount'>create new account</router-link> |
+    <router-link to='/findaccount'>forgot ID/password?</router-link>
+
+    <h4>{{msg}}</h4>
+
 </div>
     
 </template>
 
 <script>
 export default {
+    created(){
+        this.$http.get('/api/')
+        .then((response)=>{
+            this.msg = response.data;
+        })
+    },
     name:'LoginPage'
 }
 </script>
