@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var mariadb = require('../mariadb');
 
 const ADMIN = 'admin';
 const ASSESSOR = 'assessor';
@@ -11,6 +12,17 @@ router.post('/', function(req, res, next){
 
     // TODO
     // DB connection here
+
+    mariadb.query("select * from sample_account", function(err, rows, fields){
+        if(!err){
+            // console.log(rows);
+            console.log(rows[0].username);
+        } else {
+            console.log(err)
+        }
+    });
+
+    //
 
     res.json({
         role : ADMIN
