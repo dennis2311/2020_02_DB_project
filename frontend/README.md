@@ -1,14 +1,10 @@
 # frontend
 
-<<<<<<< HEAD
 > DB_project frontend
-=======
-> DB_project_frontend
->>>>>>> 4eb273df08bbd1334a7522e747c06a71aa11caec
 
 ## Build Setup
 
-``` bash
+```bash
 # install dependencies
 npm install
 
