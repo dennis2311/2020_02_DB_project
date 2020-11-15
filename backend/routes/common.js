@@ -8,25 +8,37 @@ const SUBMITTEE = 'submittee';
 
 router.post('/', function(req, res, next){
     const user = req.body.user;
-    console.log(user.userid);
 
-    // TODO
-    // DB connection here
+    var response = {
+        success : false,
+        role : '',
+        message : ''
+    }
 
-    mariadb.query("select * from sample_account", function(err, rows, fields){
+    mariadb.query(`SELECT password, role FROM sample_account WHERE username = \'${user.userid}\'`, function(err, rows, fields){
         if(!err){
-            // console.log(rows);
-            console.log(rows[0].username);
+            if(rows.length != 0){
+                console.log("User exists. Check for password correctness")
+                if(user.password === rows[0].password){
+                    console.log("Login permitted")
+                    response.success = true;
+                    response.role = rows[0].role;
+                    response.message = `You logged in as ${response.role}`;
+                    res.json(response);
+                } else {
+                    response.message = "Password incorrect. Please try again";
+                    res.json(response)
+                }
+            } else {
+                console.log("There's no user with given username")
+                response.message = "There's no user";
+                res.json(response)
+            }     
         } else {
-            console.log(err)
+            response.message = "DB ERROR. PLEASE COTACT TO ADMINISTRATOR";
+            res.json(response);
         }
     });
-
-    //
-
-    res.json({
-        role : ADMIN
-    })
 
 })
 

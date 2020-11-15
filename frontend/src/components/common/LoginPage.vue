@@ -41,13 +41,9 @@ export default {
             this.$http.post('/api',
                 {user : this.user})
             .then(res => {
-                // TODO
-                // ERROR HANDLING HERE
-
-                var role = res.data.role;
-                if (res.data.role === 'admin'){
-                    alert('YOU LOGGED IN AS AN ADMIN USER.');
-                    this.$router.push('/admin');
+                alert(res.data.message);
+                if(res.data.success){
+                    this.$router.push(`/${res.data.role}`);
                 }
             })
             .catch(function (error){
