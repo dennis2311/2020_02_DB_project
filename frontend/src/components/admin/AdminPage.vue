@@ -1,7 +1,10 @@
 <template>
 <div>
     <h1>관리자 페이지</h1>
-    <button v-on:click="goMain">홈으로 돌아가기</button>
+    <router-link to='/admin/taskcreate'>태스크 생성</router-link> |
+    <router-link to='/admin/taskmanage'>태스크 관리</router-link> |
+    <router-link to='/admin/taskstatistics'>태스크 통계</router-link> |
+    <router-link to='/admin/membermanage'>회원 관리 및 통계</router-link>
     <router-view/>
 </div>
     

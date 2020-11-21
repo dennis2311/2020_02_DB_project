@@ -17,8 +17,7 @@
     
     <h4>또는</h4>
 
-    <router-link to='/createaccount'>새 계정 만들기</router-link> |
-    <router-link to='/findaccount'>계정을 잊어버렸나요?</router-link>
+    <router-link to='/createaccount'>새 계정 만들기</router-link>
 
 </div>
     

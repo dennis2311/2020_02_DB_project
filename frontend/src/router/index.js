@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import LoginPage from '@/components/common/LoginPage'
-import CreateAccountPage from '@/components/common/CreateAccountPage'
-import FindAccountPage from '@/components/common/FindAccountPage'
-
-import AdminPage from '@/components/admin/AdminPage'
+import commonRouter from './commonRouter'
+import adminRouter from './adminRouter'
+import assessorRouter from './assessorRouter'
+import submitteeRouter from './submitteeRouter'
 
 import AssessorPage from '@/components/assessor/AssessorPage'
 
@@ -22,40 +21,10 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    {
-      path: '/',
-      name: 'LoginPage',
-      component: LoginPage
-    },
-    {
-      path: '/createaccount',
-      name: 'CreateAccountPage',
-      component: CreateAccountPage
-    },
-    {
-      path: '/findaccount',
-      name: 'FindAccountPage',
-      component: FindAccountPage
-    },
-
-    {
-      path: '/admin',
-      name: 'AdminPage',
-      component: AdminPage
-    },
-
-    {
-      path: '/assessor',
-      name: 'AssessorPage',
-      component: AssessorPage
-    },
-    
-    {
-      path: '/submittee',
-      name: 'SubmitteePage',
-      component: SubmitteePage
-    },
-
+    ...commonRouter,
+    ...adminRouter,
+    ...assessorRouter,
+    ...submitteeRouter,
     
 
     // under : example routes
