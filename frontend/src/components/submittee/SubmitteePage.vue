@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1>Submittee Page</h1>
+    <h1>제출자 페이지</h1>
     <router-view/>
 </div>
     

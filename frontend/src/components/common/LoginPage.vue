@@ -1,24 +1,24 @@
 <template>
 <div>
-    <h3>Please login for service</h3>
+    <h3>서비스 이용을 위하여 로그인 해주세요</h3>
 
     <form v-on:submit="login">
         <div class="input_row">
-            <input type="text" id="id" placeholder="id" v-model="user.userid">
+            <input type="text" id="id" placeholder="아이디" v-model="user.id">
         </div>
 
         <div class="input_row">
-            <input type="password" id="password" placeholder="password" v-model="user.password">
+            <input type="password" id="password" placeholder="비밀번호" v-model="user.password">
         </div>
 
-        <button>LOGIN</button>
+        <button>로그인</button>
 
     </form>
     
-    <h4>or</h4>
+    <h4>또는</h4>
 
-    <router-link to='/createaccount'>create new account</router-link> |
-    <router-link to='/findaccount'>forgot ID/password?</router-link>
+    <router-link to='/createaccount'>새 계정 만들기</router-link> |
+    <router-link to='/findaccount'>계정을 잊어버렸나요?</router-link>
 
 </div>
     
@@ -30,7 +30,7 @@ export default {
     data: function(){
         return{
             user:{
-                userid:'',
+                id:'',
                 password:''
             }
         }
@@ -38,8 +38,9 @@ export default {
     methods:{
         login: function(event){
             event.preventDefault();
-            this.$http.post('/api',
-                {user : this.user})
+            this.$http.post('/api',{
+                user : this.user
+            })
             .then(res => {
                 alert(res.data.message);
                 if(res.data.success){

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Find ID / Find password</h1>
+        <h1>아이디 / 비밀번호 찾기</h1>
         <h3>{{msg}}</h3>
     </div>
 </template>

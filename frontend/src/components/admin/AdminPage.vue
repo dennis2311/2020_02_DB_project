@@ -1,7 +1,7 @@
 <template>
 <div>
-    <h1>Administrator Page</h1>
-    <button v-on:click="goMain">goMain</button>
+    <h1>관리자 페이지</h1>
+    <button v-on:click="goMain">홈으로 돌아가기</button>
     <router-view/>
 </div>
     

@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1>Assessor Page</h1>
+    <h1>평가자 페이지</h1>
     <router-view/>
 </div>
     
