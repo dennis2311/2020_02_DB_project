@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var mariadb = require('../mariadb');
 
-const role = {
-    admin : '관리자',
-    assessor : '평가자',
-    submittee : '제출차'
+const role = function(req){
+    if(req==='admin') return '관리자'
+    if(req==='assessor') return '평가자'
+    if(req==='submittee') return '제출자'
 }
 
 router.post('/', function(req, res, next){
@@ -23,8 +23,7 @@ router.post('/', function(req, res, next){
                 if(user.password === rows[0].password){
                     response.success = true;
                     response.role = rows[0].role;
-                    var roleEx = rows[0].role;
-                    response.message = `${role.roleEx} 계정으로 로그인 하였습니다.`;
+                    response.message = `${role(response.role)} 계정으로 로그인 하였습니다.`;
                     res.json(response);
                 } else {
                     response.message = "비밀번호가 틀립니다. 확인 후 다시 시도해 주세요.";
