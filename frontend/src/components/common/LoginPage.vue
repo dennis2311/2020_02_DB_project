@@ -24,6 +24,12 @@
 </template>
 
 <script>
+const role = function(req){
+    if(req==='ADM') return 'admin'
+    if(req==='ASE') return 'assessor'
+    if(req==='SUB') return 'submittee'
+}
+
 export default {
     name: 'LoginPage',
     data: function(){
@@ -43,7 +49,7 @@ export default {
             .then(res => {
                 alert(res.data.message);
                 if(res.data.success){
-                    this.$router.push(`/${res.data.role}`);
+                    this.$router.push(`/${role(res.data.role)}`);
                 }
             })
             .catch(function (error){

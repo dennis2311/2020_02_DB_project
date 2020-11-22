@@ -19,10 +19,10 @@
             </div>
 
             <div class="input_row">
-                <input type="radio" id="submittee" value="submittee" v-model="user.role">
+                <input type="radio" id="submittee" value="SUB" v-model="user.role">
                 <label for="제출자">제출자</label>
                 <br>
-                <input type="radio" id="assessor" value="assessor" v-model="user.role">
+                <input type="radio" id="assessor" value="ASE" v-model="user.role">
                 <label for="평가자">평가자</label>
                 <br>
             </div>

@@ -3,9 +3,9 @@ var router = express.Router();
 var mariadb = require('../mariadb');
 
 const role = function(req){
-    if(req==='admin') return '관리자'
-    if(req==='assessor') return '평가자'
-    if(req==='submittee') return '제출자'
+    if(req==='ADM') return '관리자'
+    if(req==='ASE') return '평가자'
+    if(req==='SUB') return '제출자'
 }
 
 router.post('/', function(req, res, next){
@@ -17,15 +17,17 @@ router.post('/', function(req, res, next){
         message : ''
     }
 
-    mariadb.query(`SELECT password, role FROM sample_account WHERE id = \'${user.id}\'`, function(err, rows, fields){
+    mariadb.query(`SELECT PASSWORD, ROLE FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
         if(!err){
             if(rows.length != 0){
-                if(user.password === rows[0].password){
+                if(user.password === rows[0].PASSWORD){
                     response.success = true;
-                    response.role = rows[0].role;
+                    response.role = rows[0].ROLE;
                     response.message = `${role(response.role)} 계정으로 로그인 하였습니다.`;
                     res.json(response);
                 } else {
+                    console.log(user.password)
+                    console.log(rows[0].PASSWORD)
                     response.message = "비밀번호가 틀립니다. 확인 후 다시 시도해 주세요.";
                     res.json(response)
                 }
@@ -87,17 +89,19 @@ router.post('/createaccount', function(req, res, next){
                     res.json(response);
                 }
             } else {
+                console.log("첫번째 쿼리 오류")
                 response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
                 res.json(response);
             }
         })
 
-        mariadb.query(`INSERT INTO ACCOUNT VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.birthdate}\', \'${user.gender}\', \'${user.address}\', \'${user.phone}\', \'${user.role}\',)`, function(err, rows, fields){
+        mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.role}\')`, function(err, rows, fields){
             if(!err){
                 response.success = true
                 response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
                 res.json(response);
             } else {
+                console.log(err)
                 response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
                 res.json(response);
             }
