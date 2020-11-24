@@ -122,7 +122,7 @@ router.post('/changepassword', function(req, res, next){
         message : ''
     }
 
-    // 로그인 이후 id를 전달받지 않은 상태에서 mariadb내에 유일하지 않은 pw만으로는 유저 지명할 수 없음
+    // 로그인 이후 id를 전달받지 않은 상태에서 mariadb 내에 유일하지 않은 pw만으로는 유저 지명할 수 없음
     mariadb.query(`SELECT PASSWORD, ROLE FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
         if(!err){
             if(rows.length != 0){
