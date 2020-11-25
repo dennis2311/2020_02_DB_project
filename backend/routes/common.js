@@ -10,9 +10,9 @@ const role = function(req){
 
 router.post('/', function(req, res, next){
     const user = req.body.user;
-
+    
     var response = {
-        success : false,
+        success : 'false',
         role : '',
         message : ''
     }
@@ -24,37 +24,21 @@ router.post('/', function(req, res, next){
                     response.success = true;
                     response.role = rows[0].ROLE;
                     response.message = `${role(response.role)} 계정으로 로그인 하였습니다.`;
-                    res.json(response);
                 } else {
-                    console.log(user.password)
-                    console.log(rows[0].PASSWORD)
                     response.message = "비밀번호가 틀립니다. 확인 후 다시 시도해 주세요.";
-                    res.json(response)
                 }
             } else {
                 response.message = "일치하는 아이디가 없습니다.";
-                res.json(response)
             }     
         } else {
             response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
-            res.json(response);
         }
+        res.json(response);
     });
-
 })
 
 router.post('/createaccount', function(req, res, next){
-    const user = {
-        'id' : req.body.user.id,
-        'password': req.body.user.password,
-        'password_confirm': req.body.user.password_confirm,
-        'name': req.body.user.name,
-        'birthdate':req.body.user.birthdate,
-        'gender':req.body.user.gender,
-        'address':req.body.user.address,
-        'phone':req.body.user.phone,
-        'role':req.body.user.role
-    };
+    const user = req.body.user;
 
     var response = {
         success : false,
@@ -69,7 +53,7 @@ router.post('/createaccount', function(req, res, next){
         response.message = '비밀번호는 필수 항목입니다.';
         res.json(response);
     }
-    else if (user.password != user.password_confirm){
+    else if (user.password !== user.password_confirm){
         response.message = '두 비밀번호가 일치하지 않습니다. 다시 확인해주세요.';
         res.json(response);
     }
@@ -89,7 +73,6 @@ router.post('/createaccount', function(req, res, next){
                     res.json(response);
                 }
             } else {
-                console.log("첫번째 쿼리 오류")
                 response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
                 res.json(response);
             }
@@ -101,7 +84,6 @@ router.post('/createaccount', function(req, res, next){
                 response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
                 res.json(response);
             } else {
-                console.log(err)
                 response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
                 res.json(response);
             }
