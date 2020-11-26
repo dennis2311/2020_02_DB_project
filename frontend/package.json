@@ -13,9 +13,13 @@
     "@babel/runtime": "^7.12.5",
     "axios": "^0.21.0",
     "each-async": "^1.1.1",
+    "es6-promise": "^4.2.8",
     "indent-string": "^4.0.0",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-session": "^1.0.0",
+    "vuex": "^3.6.0",
+    "vuex-persistedstate": "^4.0.0-beta.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

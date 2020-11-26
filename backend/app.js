@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -12,6 +13,11 @@ var submitteeRouter = require('./routes/submittee');
 
 var app = express();
 
+app.use(session({
+  secret: 'ambc@!vsmkv#!&*!#EDNAnsv#!$()_*#@',
+  resave: false,
+  saveUninitialized: true
+}));
 app.use(require('connect-history-api-fallback')());
 
 // view engine setup

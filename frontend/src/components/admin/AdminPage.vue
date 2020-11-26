@@ -1,6 +1,12 @@
 <template>
 <div>
     <h1>관리자 페이지</h1>
+
+    <b v-if="this.$store.state.loggedIn">count : {{this.$store.state.count}}</b>
+
+    <input type="button" @click="increment()" value="increment"/>
+    <router-link to="/submittee">go to submittee</router-link>
+
     <router-link to='/admin/taskcreate'>태스크 생성</router-link> |
     <router-link to='/admin/taskmanage'>태스크 관리</router-link> |
     <router-link to='/admin/taskstatistics'>태스크 통계</router-link> |
@@ -14,11 +20,10 @@
 export default {
     name:'AdminPage',
     methods:{
-        goMain: function(e){
-            e.preventDefault();
-            this.$router.push('/');
+        increment: function (event) {
+            this.$store.commit('increment')
         }
-    }
+    },
 }
 </script>
 

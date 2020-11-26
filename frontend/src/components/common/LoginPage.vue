@@ -36,7 +36,8 @@ export default {
         return{
             user:{
                 id:'',
-                password:''
+                password:'',
+                count:this.$store.state.count
             }
         }
     },
@@ -49,6 +50,7 @@ export default {
             .then(res => {
                 alert(res.data.message);
                 if(res.data.success){
+                    this.$store.commit('logIn', res.data);
                     this.$router.push(`/${role(res.data.role)}`);
                 }
             })

@@ -1,13 +1,15 @@
 <template>
   <div id="app">
     <img src="./assets/banner.png">
+    
+    <b v-if="this.$store.state.loggedIn">로그아웃</b>
     <router-view/>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
 }
 </script>
 

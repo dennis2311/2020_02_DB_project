@@ -13,6 +13,7 @@ router.post('/', function(req, res, next){
     
     var response = {
         success : 'false',
+        id : '',
         role : '',
         message : ''
     }
@@ -22,6 +23,7 @@ router.post('/', function(req, res, next){
             if(rows.length != 0){
                 if(user.password === rows[0].PASSWORD){
                     response.success = true;
+                    response.id = user.id;
                     response.role = rows[0].ROLE;
                     response.message = `${role(response.role)} 계정으로 로그인 하였습니다.`;
                 } else {
