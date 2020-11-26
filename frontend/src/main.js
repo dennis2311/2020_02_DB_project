@@ -6,7 +6,6 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import createPersistedState from 'vuex-persistedstate';
-// import modules from './modules';
 import 'es6-promise/auto'
 
 Vue.use(Vuex)
@@ -18,17 +17,12 @@ const store = new Vuex.Store({
     createPersistedState()
   ],
   state:{
-    count:0,
     loggedIn: false,
     id:'',
     role: '',
   },
   mutations:{
-    increment(state){
-      state.count++;
-    },
     logIn(state, payload){
-      state.count++;
       state.loggedIn = true;
       state.id = payload.id
       state.role = payload.role
