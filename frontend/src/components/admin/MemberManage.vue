@@ -1,7 +1,8 @@
 <template>
 <div>
+    <h2>가입 유저 목록입니다. 클릭 시 상세 보기로 넘어갑니다.</h2>
     <div v-for="user in users" v-bind:key="user">
-        {{user.ID}}
+        <router-link :to="{name:'MemberManage_Each', params:{id:user.ID}}">{{user.ID}} ({{user.ROLE}})</router-link>
     </div>
 </div>
     
@@ -16,7 +17,6 @@ export default {
         } else {
             this.$http.get('/api/admin/membermanage')
             .then(res => {
-                alert(`데이터 수신 완료 ${res.data[0]}`)
                 this.users = res.data
             })
         }

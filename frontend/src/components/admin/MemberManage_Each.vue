@@ -1,18 +1,23 @@
 <template>
 <div>
-    
+    MemberManage_Each
 </div>
     
 </template>
 
 <script>
 export default {
+    name:"MemberManage_Each",
     created(){
         if(this.$store.state.role!=='ADM'){
             alert("권한이 없습니다")
             this.$router.go(-1)
         } else {
-            // this.$http.get('/api/admin/membermanage/:id')
+            var id = this.$route.params.id
+            this.$http.get(`/api/admin/membermanage/${id}`)
+            .then(res => {
+                
+            })
         }
     },
     data: function(){
