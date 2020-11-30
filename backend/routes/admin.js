@@ -4,7 +4,7 @@ var mariadb = require('../mariadb');
 
 router.get('/membermanage', function(req, res, next) {
     var response = {
-        success : 'false',
+        success : false,
         users : [],
         message : ''
     }

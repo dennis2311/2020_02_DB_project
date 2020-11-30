@@ -12,7 +12,7 @@ router.post('/', function(req, res, next){
     const user = req.body.user;
     
     var response = {
-        success : 'false',
+        success : false,
         id : '',
         role : '',
         message : ''
