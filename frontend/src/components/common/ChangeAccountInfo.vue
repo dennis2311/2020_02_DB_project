@@ -14,7 +14,7 @@
                 <input type="password" id="new_password_confirm" placeholder="새 비밀번호 확인" v-model="user.new_password_confirm">
             </div>
 
-            <button>변경</button>
+            <button>수정</button>
         </form>
     </div>
 </template>

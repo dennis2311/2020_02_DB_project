@@ -40,7 +40,7 @@ router.post('/', function(req, res, next){
 })
 
 router.post('/createaccount', function(req, res, next){
-    const user = req.body.user;
+    const user = req.body.user
 
     var response = {
         success : false,
@@ -79,17 +79,31 @@ router.post('/createaccount', function(req, res, next){
                 res.json(response);
             }
         })
-
-        mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.role}\')`, function(err, rows, fields){
-            if(!err){
-                response.success = true
-                response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
-                res.json(response);
-            } else {
-                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
-                res.json(response);
-            }
-        })
+        if(user.birthdate===''){
+            mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, GENDER, ADDRESS, PHONE, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\',\'${user.gender}\',\'${user.address}\', \'${user.phone}\', \'${user.role}\')`, function(err, rows, fields){
+                if(!err){
+                    response.success = true
+                    response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
+                    res.json(response);
+                } else {
+                    console.log(err)
+                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                    res.json(response);
+                }
+            })
+        } else{
+            mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, BIRTHDATE, GENDER, ADDRESS, PHONE, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.birthdate}\',\'${user.gender}\',\'${user.address}\', \'${user.phone}\', \'${user.role}\')`, function(err, rows, fields){
+                if(!err){
+                    response.success = true
+                    response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
+                    res.json(response);
+                } else {
+                    console.log(err)
+                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                    res.json(response);
+                }
+            })
+        }        
     }
 })
 
