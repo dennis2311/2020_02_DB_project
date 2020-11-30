@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h3>비밀번호 변경</h3>
-        <form v-on:submit="changePassword">
+        <h3>회원정보 수정</h3>
+        <form v-on:submit="changeAccountInfo">
             <div class="input_row">
                 <input type="password" id="current_password" placeholder="현재 비밀번호" v-model="user.current_password">
             </div>
@@ -32,9 +32,9 @@ export default {
         }
     },
     methods: {
-        changePassword: function(event){
+        changeAccountInfo: function(event){
             event.preventDefault();
-            this.$http.post('/api/changepassword',{
+            this.$http.post('/api/changeaccountinfo',{
                 user:this.user
 
             })

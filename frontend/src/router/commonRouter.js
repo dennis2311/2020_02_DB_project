@@ -1,6 +1,7 @@
 import LoginPage from '../components/common/LoginPage'
 import CreateAccountPage from '../components/common/CreateAccountPage'
 import ChangePassword from '../components/common/ChangePassword'
+import ChangeAccountInfo from '../components/common/ChangeAccountInfo'
 
 export default [
     {
@@ -18,4 +19,9 @@ export default [
         name: 'ChangePassword',
         component: ChangePassword
       },
+      {
+        path: '/changeaccountinfo',
+        name: 'ChangeAccountInfo',
+        component: ChangeAccountInfo
+      }
 ]
