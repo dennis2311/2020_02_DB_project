@@ -63,7 +63,7 @@ export default {
                 password:'',
                 password_confirm:'',
                 name:'',
-                birthdate:'',
+                birthdate: '',
                 gender:'',
                 address:'',
                 phone:'',
