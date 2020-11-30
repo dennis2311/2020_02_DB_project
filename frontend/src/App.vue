@@ -21,7 +21,7 @@ export default {
       event.preventDefault();
       this.$store.commit('logOut')
       alert('성공적으로 로그아웃 되었습니다. 메인화면으로 돌아갑니다.')
-      this.$router.push('/api')
+      this.$router.push('/')
     }
   }
 }
