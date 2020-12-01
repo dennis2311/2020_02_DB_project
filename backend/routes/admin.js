@@ -32,4 +32,33 @@ router.get('/membermanage/:id/task', function(req, res, next){
     })
 })
 
+router.post('/taskcreate', function(req, res, next){
+    const user = req.body.user
+
+    var response = {
+        success : false,
+        message : ''
+    }
+
+    if (user.taskName===''){
+        response.message = '테스크 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskDescription===''){
+        response.message = '테스크 설명은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskTableName===''){
+        response.message = '테스크 데이터 테이블 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskTableSchemaInfo===''){
+        response.message = '테스크 데이터 테이블 스키마 정보는 필수 항목입니다.';
+        res.json(response);
+    }
+    else{
+                
+    }
+})
+
 module.exports = router;
