@@ -37,7 +37,12 @@ router.get('/tasklist/:taskname/:userid', function(req, res, next) {
             response.message = 'task 신청이 완료되었습니다.';
             res.json(response)
         } else {
-            response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+            if(err.code == 'ER_DUP_ENTRY'){
+                response.message = "이미 신청한 태스크입니다.";
+            }
+            else{
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+            }
             console.log(taskname);
             console.log(userid);
             console.log(err)

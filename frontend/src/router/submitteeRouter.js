@@ -2,6 +2,7 @@ import SubmitteePage from '../components/submittee/SubmitteePage'
 import TasklistAndApplyFor from '../components/submittee/TasklistAndApplyFor'
 import TaskApply from '../components/submittee/TaskApply'
 
+
 export default [
     {
         path: '/submittee',
@@ -14,8 +15,9 @@ export default [
         component: TasklistAndApplyFor
     },
     {
-        path: '/admin/tasklist/:taskname/:userid',
+        path: '/submittee/tasklist/:taskname/:userid',
         name: 'TaskApply',
         component: TaskApply
-      }
+    }
+   
 ]
