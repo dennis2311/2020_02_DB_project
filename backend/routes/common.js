@@ -156,4 +156,38 @@ router.post('/changepassword', function(req, res, next){
     }
 })
 
+router.post('/signout', function(req, res, next){
+    const user = req.body.user;
+
+    var response = {
+        success : false,
+        message : ''
+    }
+
+    mariadb.query(`SELECT PASSWORD FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
+        if(!err){
+            if(rows[0].PASSWORD === user.password){
+                mariadb.query(`DELETE FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
+                    if(!err){
+                        response.success = true
+                        response.message = '회원 탈퇴가 완료 되었습니다. 메인 화면으로 돌아갑니다.'
+                        res.json(response)
+                    } else {
+                        response.message = '서버 문제입니다. 문제가 계속되는 경우 관리자에게 문의하세요.'
+                        res.json(response)
+                    }
+                })
+                
+            } else {
+                response.message = '비밀번호가 일치하지 않습니다.'
+                res.json(response)
+            }
+        } else {
+            response.message = '서버 문제입니다. 문제가 계속되는 경우 관리자에게 문의하세요.'
+            res.json(response)
+        }
+    })
+
+})
+
 module.exports = router;
