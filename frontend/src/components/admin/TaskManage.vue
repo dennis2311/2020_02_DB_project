@@ -29,7 +29,7 @@
 // 태스크 데이터 테이블의 스키마와 어떻게 매핑 되는지에 대한 
 // 정보를 추가할 수 있어야 한다......use ORIGINAL_DATA_TYPE TABLE
 // PASS_GRADE added to PARSING_DATA_SEQUENCE_FILE for ..-->
-// -->관리자는 해당 태스트의 데이터에 대한 Pass 기준을 설정할 수 있어야 한다.
+// -->관리자는 해당 태스크의 데이터에 대한 Pass 기준을 설정할 수 있어야 한다.
 // ON-WORK
 export default {
 
