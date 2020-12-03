@@ -24,7 +24,7 @@ router.get('/membermanage/:id', function(req, res, next){
 
 router.get('/membermanage/:id', function(req, res, next){
     console.log('params : '+req.params)
-    console.log('paht : '+req.path)
+    console.log('path : '+req.path)
     console.log('query : '+req.query)
     res.send(['awesome user'])
 })
