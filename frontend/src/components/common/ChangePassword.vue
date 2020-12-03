@@ -3,15 +3,15 @@
         <h3>비밀번호 변경</h3>
         <form v-on:submit="changePassword">
             <div class="input_row">
-                <input type="text" id="id" placeholder="현재 비밀번호" v-model="user.current_password">
+                <input type="password" id="current_password" placeholder="현재 비밀번호" v-model="user.current_password">
             </div>
 
             <div class="input_row">
-                <input type="password" id="password" placeholder="새 비밀번호" v-model="user.new_password">
+                <input type="password" id="new_password" placeholder="새 비밀번호" v-model="user.new_password">
             </div>
 
             <div class="input_row">
-                <input type="password" id="password_confirm" placeholder="새 비밀번호 확인" v-model="user.new_password_confirm">
+                <input type="password" id="new_password_confirm" placeholder="새 비밀번호 확인" v-model="user.new_password_confirm">
             </div>
 
             <button>변경</button>
@@ -27,14 +27,16 @@ export default {
                 current_password:'',
                 new_password:'',
                 new_password_confirm:'',
+                id: this.$store.state.id
             }
         }
     },
     methods: {
-        signUp: function(event){
+        changePassword: function(event){
             event.preventDefault();
             this.$http.post('/api/changepassword',{
                 user:this.user
+
             })
             .then(res => {
                 alert(res.data.message);

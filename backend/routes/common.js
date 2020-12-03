@@ -12,7 +12,7 @@ router.post('/', function(req, res, next){
     const user = req.body.user;
     
     var response = {
-        success : 'false',
+        success : false,
         id : '',
         role : '',
         message : ''
@@ -40,7 +40,7 @@ router.post('/', function(req, res, next){
 })
 
 router.post('/createaccount', function(req, res, next){
-    const user = req.body.user;
+    const user = req.body.user
 
     var response = {
         success : false,
@@ -79,17 +79,31 @@ router.post('/createaccount', function(req, res, next){
                 res.json(response);
             }
         })
-
-        mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.role}\')`, function(err, rows, fields){
-            if(!err){
-                response.success = true
-                response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
-                res.json(response);
-            } else {
-                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
-                res.json(response);
-            }
-        })
+        if(user.birthdate===''){
+            mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, GENDER, ADDRESS, PHONE, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\',\'${user.gender}\',\'${user.address}\', \'${user.phone}\', \'${user.role}\')`, function(err, rows, fields){
+                if(!err){
+                    response.success = true
+                    response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
+                    res.json(response);
+                } else {
+                    console.log(err)
+                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                    res.json(response);
+                }
+            })
+        } else{
+            mariadb.query(`INSERT INTO ACCOUNT (ID, PASSWORD, NAME, BIRTHDATE, GENDER, ADDRESS, PHONE, ROLE) VALUES (\'${user.id}\', \'${user.password}\', \'${user.name}\', \'${user.birthdate}\',\'${user.gender}\',\'${user.address}\', \'${user.phone}\', \'${user.role}\')`, function(err, rows, fields){
+                if(!err){
+                    response.success = true
+                    response.message = '계정 생성이 완료되었습니다. 메인 화면으로 돌아갑니다.';
+                    res.json(response);
+                } else {
+                    console.log(err)
+                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                    res.json(response);
+                }
+            })
+        }        
     }
 })
 
@@ -97,39 +111,49 @@ router.post('/changepassword', function(req, res, next){
     const user = {
         'current_password': req.body.user.current_password,
         'new_password': req.body.user.new_password,
-        'new_password_confirm': req.body.user.new_password_confirm
+        'new_password_confirm': req.body.user.new_password_confirm,
+        'id': req.body.user.id
     };
 
     var response = {
         success : false,
-        role : '',
         message : ''
     }
 
-    // 로그인 이후 id를 전달받지 않은 상태에서 mariadb 내에 유일하지 않은 pw만으로는 유저 지명할 수 없음
-    mariadb.query(`SELECT PASSWORD, ROLE FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
-        if(!err){
-            if(rows.length != 0){
-                if(user.current_password === rows[0].PASSWORD){
-                    response.success = true;
-                    // update account new_password through the id
-                    res.json(response);
+    if(user.new_password !== user.new_password_confirm){
+        response.message = "비밀번호 확인이 틀립니다. 확인 후 다시 시도해주세요.";
+        res.json(response);
+    } else {
+        mariadb.query(`SELECT PASSWORD FROM ACCOUNT WHERE ID = \'${user.id}\'`, function(err, rows, fields){
+            if(!err){
+                if(rows.length != 0){
+                    if(user.current_password === rows[0].PASSWORD){
+                        mariadb.query(`UPDATE ACCOUNT SET PASSWORD = \'${user.new_password}\' WHERE ID = \'${user.id}\'`, function(err, rows, fields){
+                            if(!err){
+                                response.success = true;
+                                response.message = '비밀번호가 성공적으로 변경되었습니다. 로그인 화면으로 돌아갑니다.';
+                                res.json(response);
+                            } else{
+                                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+                                res.json(response);
+                            }
+                        });
+                    } else {
+                        console.log(user.current_password);
+                        console.log(rows[0].PASSWORD);
+                        response.message = "비밀번호가 틀립니다. 확인 후 다시 시도해 주세요.";
+                        res.json(response);
+                    }
                 } else {
-                    console.log(user.current_password)
-                    console.log(rows[0].PASSWORD)
-                    response.message = "비밀번호가 틀립니다. 확인 후 다시 시도해 주세요.";
-                    res.json(response)
-                }
+                    response.message = "일치하는 아이디가 없습니다.";
+                    res.json(response);
+                }     
             } else {
-                response.message = "일치하는 아이디가 없습니다.";
-                res.json(response)
-            }     
-        } else {
-            response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
-            res.json(response);
-        }
-    });
-
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+                res.json(response);
+            }
+        });
+    }
 })
 
 module.exports = router;

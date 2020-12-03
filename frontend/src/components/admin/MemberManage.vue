@@ -26,26 +26,6 @@ export default {
             users : []
         }
     },
-
-    methods:{
-        login: function(event){
-            event.preventDefault();
-            this.$http.post('/api',{
-                user : this.user
-            })
-            .then(res => {
-                alert(res.data.message);
-                if(res.data.success){
-                    this.$store.commit('logIn', res.data);
-                    this.$router.push(`/${role(res.data.role)}`);
-                }
-            })
-            .catch(function (error){
-                alert(error);
-            })
-        }
-    }
-
 }
 </script>
 

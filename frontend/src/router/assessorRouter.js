@@ -1,4 +1,5 @@
 import AssessorPage from '../components/assessor/AssessorPage'
+import ParsingDataFileEvaluate from '../components/assessor/ParsingDataFileEvaluate'
 
 export default [
     {
@@ -6,4 +7,9 @@ export default [
         name: 'AssessorPage',
         component: AssessorPage
     },
+    {
+        path: '/assessor/parsingevaluate',
+        name: 'ParsingDataFileEvaluate',
+        component: ParsingDataFileEvaluate
+    }
 ]
