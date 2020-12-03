@@ -14,7 +14,7 @@
 
             <div class="form-group">
                 <label for="min_upload_period">최소 업로드 주기 (일)</label>
-                <input type="number" name="min_upload_period" min="0" max="100" step="10" value="30" v-model="user.min_upload_period">
+                <input type="number" name="min_upload_period" min="0" max="100" step="10" v-model="user.min_upload_period">
             </div>
 
             <div class="form-group">

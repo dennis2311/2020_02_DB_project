@@ -2,6 +2,58 @@ var express = require('express');
 var router = express.Router();
 var mariadb = require('../mariadb');
 
+router.post('/taskcreate', function(req, res, next){
+    const user = req.body.user
+
+    var response = {
+        success : false,
+        message : ''
+    }
+
+    if (user.taskName===''){
+        response.message = '테스크 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskDescription===''){
+        response.message = '테스크 설명은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskTableName===''){
+        response.message = '테스크 데이터 테이블 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.taskTableSchemaInfo===''){
+        response.message = '테스크 데이터 테이블 스키마 정보는 필수 항목입니다.';
+        res.json(response);
+    }
+    else {
+        mariadb.query(`SELECT NAME FROM TASK WHERE NAME =\'${user.id}\'`, function(err, rows, fields){
+            if(!err){
+                if(rows.length != 0){
+                    response.message = '이미 생성된 테스크 입니다.';
+                    res.json(response);
+                }
+            } else {
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+                res.json(response);
+            }
+        });
+        mariadb.query(`INSERT INTO TASK (NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, TASK_TABLE_NAME, TASK_TABLE_SCHEMA_INFO,ADMIN_ID) VALUES (\'${user.taskName}\', \'${user.taskDescription}\', \'${user.min_upload_period}\',\'${user.taskTableName}\',\'${user.taskTableSchemaInfo}\', 'admin')`, function(err,rows, fields){
+            if(!err){
+                // task data table 생성
+                // response.success = true
+                // response.message = '여기까지 에러 없음';
+                // res.json(response);
+                
+            } else {
+                console.log(err)
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                res.json(response);
+            }
+        });
+    }
+});
+
 router.get('/membermanage', function(req, res, next) {    
     mariadb.query(`SELECT ID, ROLE FROM ACCOUNT WHERE ROLE IN (\'ASE\', \'SUB\')`, function(err, rows, fields){
         if(!err){
