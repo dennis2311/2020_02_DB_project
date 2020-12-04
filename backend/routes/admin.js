@@ -145,4 +145,34 @@ router.post('/taskmanage', function(req, res, next){
     })
 })
 
+router.post('/taskstatistics', function(req, res, next){
+    var response = {
+        success : false,
+        all_tasks : [],
+        task_submitee : [],
+        message : ''
+    }
+
+    // files per each task & (count tuples in passed TDT related to task)
+    // files per each ORGDT & (count tuples in passed TDT related to ORGDT)
+    // check submitees for each task
+    // check task for each submitee
+    console.log(mariadb.query('SELECT * FROM PARTICIPATES_IN'), function(err1, rows1, fields1){
+        if(!err){
+            response.success = true;
+            for (var i = 0; i < rows1.length; i++) {
+                t_name = rows1[i].TASK_NAME
+                s_id = rows1[i].SUBMITEE_ID
+                approve = rows1[i].APPROVED
+                if (approve==1){
+                    task_submitee.push([t_name, s_id])
+                }
+            }
+        } else {
+            response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요."
+        }
+    })
+
+
+})
 module.exports = router;

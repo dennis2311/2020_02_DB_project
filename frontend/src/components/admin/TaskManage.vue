@@ -28,7 +28,6 @@
         </h4>
     </div>
     <button v-on:click="submit_accept">제출</button>
-    <!-- for each applicant, show -->
 </div>
 </template>
 

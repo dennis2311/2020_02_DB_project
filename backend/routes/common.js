@@ -190,4 +190,58 @@ router.post('/signout', function(req, res, next){
 
 })
 
+router.post('/changeaccountinfo', function(req, res, next){
+    const id = req.body.id;
+    const user = {
+        "id" : req.body.user.id,
+        "name" : req.body.user.name,
+        "birthdate" : req.body.user.birthdate,
+        "gender" : req.body.user.gender,
+        "address" : req.body.user.address,
+        "phone" : req.body.user.phone,
+    };
+    const updating = req.body.updating;
+
+    var response = {
+        success : false,
+        message : "",
+        user : {
+            "name" : req.body.user.name,
+            "birthdate" : req.body.user.birthdate,
+            "gender" : req.body.user.gender,
+            "address" : req.body.user.address,
+            "phone" : req.body.user.phone,
+        }
+    }
+    console.log(user)
+
+    if(updating == true){
+        if (user.name===''){
+            response.message = '이름은 필수 항목입니다.';
+            res.json(response);
+        }
+        else {
+            var new_sql = `UPDATE ACCOUNT SET NAME=?, BIRTHDATE=?, \
+            GENDER=?, ADDRESS=?, PHONE=? WHERE ID=?`
+            variables = [user.name, user.birthdate, user.gender, user.address, user.phone, id]
+            mariadb.query(new_sql, variables)
+        }
+    }
+
+    mariadb.query(`SELECT NAME, BIRTHDATE, GENDER, ADDRESS,\
+    PHONE FROM ACCOUNT WHERE ID=\'${id}\'`, function(err, rows, fields){
+        if(!err){
+            response.success = true
+            response.user.name = rows[0].NAME
+            response.user.birthdate = rows[0].BIRTHDATE
+            response.user.gender = rows[0].GENDER
+            response.user.address = rows[0].ADDRESS
+            response.user.phone = rows[0].PHONE
+            res.json(response)
+        } else {
+            response.message = '서버 문제입니다. 문제가 계속되는 경우 관리자에게 문의하세요.'
+            res.json(response)
+        }
+    })
+})
 module.exports = router;
