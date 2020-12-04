@@ -31,7 +31,9 @@ router.get('/membermanage/:id', function(req, res, next){
 
 router.post('/taskmanage', function(req, res, next){
     const accept = req.body.accept;
-    console.log(accept)
+    const pass_grade = req.body.pass_grade;
+    const task_grade_sel = req.body.task_grade_sel
+    
     var response = {
         success : false,
         all_tasks: [],
@@ -39,25 +41,34 @@ router.post('/taskmanage', function(req, res, next){
         message : ''
     }
 
+    if (task_grade_sel != ""){
+        mariadb.query(`UPDATE TASK SET PASS_GRADE=\'${pass_grade}\'
+            WHERE NAME=\'${task_grade_sel}\'`)
+    }
+        
     for(i=0; i<accept.length; i++){
+        // change approved to 1 if admin approves to participate in task for submitee
         console.log(accept)
         mariadb.query(`UPDATE PARTICIPATES_IN SET APPROVED=1 \
         WHERE TASK_NAME=\'${accept[i][0]}\' AND SUBMITEE_ID=\'${accept[i][1]}\'`)
     }
 
     // for each task that exists
-    mariadb.query('SELECT NAME FROM TASK', function(err1, rows1, fields1){
+    mariadb.query('SELECT NAME, PASS_GRADE FROM TASK', function(err1, rows1, fields1){
         if(!err1){
             response.success = true
+            // change pass grade using input of admin
             for (var i = 0; i < rows1.length; i++) {
                 // save each task name
                 task_name = rows1[i].NAME
-                response.all_tasks.push([task_name])
+                p_grade = rows1[i].PASS_GRADE
+                response.all_tasks.push([task_name, p_grade])
             }
-            query2 = `SELECT TASK.NAME, SUBMITEE_ID, EVALUATION_GRADE \
+            
+            query3 = `SELECT TASK.NAME, SUBMITEE_ID, EVALUATION_GRADE\
             FROM PARTICIPATES_IN, TASK, ACCOUNT \
             WHERE TASK_NAME=TASK.NAME AND APPROVED=0 AND ID=SUBMITEE_ID`;
-            mariadb.query(query2, function(err2, rows2, feilds2){
+            mariadb.query(query3, function(err2, rows2, feilds2){
                 for (var j = 0; j < rows2.length; j++){
                     // send submitee id(applicant of this task)
                     // send the evaluation grade of the submitee(for admin to approve/or not)
