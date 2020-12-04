@@ -35,21 +35,6 @@
     </table>
     </div>
 
-     <!--  
-    <div v-for="(task, index) in tasks" v-bind:key="task">
-        <h5>{{index + 1}} {{task.NAME}} {{task.TASK_DESCRIPTION}} {{task.MIN_UPLOAD_PERIOD}} {{task.TASK_TABLE_SCHEMA_INFO}} {{task.ADMIN_ID}}
-            <button @click="handle_toggle(index)" type="button"> 신청하기 </button>
-
-            <div v-show="is_shows[index]">
-                <h5>개인정보 이용 동의서</h5>
-                <P>태스크에 참가신청을 하려면 개인정보 이용 동의를 해야합니다.</p>
-
-                <button v-on:click="apply(index)"> 동의 후 신청</button>
-            </div>
-        </h5>
-    </div>
-    -->
-
 </div>   
 </template>
 
