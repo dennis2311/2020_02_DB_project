@@ -10,7 +10,7 @@ router.get('/tasklist', function(req, res, next) {
         message : ''
     }
 
-    mariadb.query(`SELECT NAME, MIN_UPLOAD_PERIOD, ADMIN_ID FROM TASK`, function(err, rows, fields){
+    mariadb.query(`SELECT NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, ADMIN_ID FROM TASK`, function(err, rows, fields){
         if(!err){
             response.success = true
             res.send(JSON.stringify(rows))
