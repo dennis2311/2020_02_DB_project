@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -10,11 +11,13 @@ var adminRouter = require('./routes/admin');
 var assessorRouter = require('./routes/assessor');
 var submitteeRouter = require('./routes/submittee');
 
-var usersRouter = require('./routes/users');
-var showUsersRouter = require('./routes/show-users');
-
 var app = express();
 
+app.use(session({
+  secret: 'ambc@!vsmkv#!&*!#EDNAnsv#!$()_*#@',
+  resave: false,
+  saveUninitialized: true
+}));
 app.use(require('connect-history-api-fallback')());
 
 // view engine setup
@@ -32,9 +35,6 @@ app.use('/api', commonRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/assessor', assessorRouter);
 app.use('/api/submittee', submitteeRouter);
-
-app.use('/api/users', usersRouter);
-app.use('/api/showUsers', showUsersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

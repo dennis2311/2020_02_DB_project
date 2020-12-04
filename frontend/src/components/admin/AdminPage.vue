@@ -1,6 +1,5 @@
 <template>
 <div>
-    <h1>관리자 페이지</h1>
     <router-link to='/admin/taskcreate'>태스크 생성</router-link> |
     <router-link to='/admin/taskmanage'>태스크 관리</router-link> |
     <router-link to='/admin/taskstatistics'>태스크 통계</router-link> |
@@ -12,13 +11,13 @@
 
 <script>
 export default {
-    name:'AdminPage',
-    methods:{
-        goMain: function(e){
-            e.preventDefault();
-            this.$router.push('/');
+    created(){
+        if(this.$store.state.role!=='ADM'){
+            alert("권한이 없습니다")
+            this.$router.go(-1)
         }
-    }
+    },
+    name:'AdminPage',
 }
 </script>
 

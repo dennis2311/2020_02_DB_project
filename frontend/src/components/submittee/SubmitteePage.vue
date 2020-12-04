@@ -1,6 +1,5 @@
 <template>
 <div>
-    <h1>제출자 페이지</h1>
     <router-view/>
 </div>
     
@@ -8,7 +7,7 @@
 
 <script>
 export default {
-    name:'SubmitteePage'
+    name:'SubmitteePage',
 }
 </script>
 

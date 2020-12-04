@@ -19,6 +19,28 @@
             </div>
 
             <div class="input_row">
+                     <input type="date" id="birthdate" placeholder="생년월일" v-model="user.birthdate">
+            </div>
+
+            <div class="input_row">
+                <input type="radio" id="female" value="F" v-model="user.gender">
+                <label for="Female">Female</label>
+                <input type="radio" id="male" value="M" v-model="user.gender">
+                <label for="Male">Male</label>
+                <input type="radio" id="other" value="O" v-model="user.gender">
+                <label for="Other">Other</label>
+                <br>
+            </div>
+
+            <div class="input_row">
+                <input type="text" id="address" placeholder="주소" v-model="user.address">
+            </div>
+
+            <div class="input_row">
+                <input type="text" id="phone" placeholder="휴대전화" v-model="user.phone">
+            </div>
+
+            <div class="input_row">
                 <input type="radio" id="submittee" value="SUB" v-model="user.role">
                 <label for="제출자">제출자</label>
                 <br>
@@ -41,7 +63,7 @@ export default {
                 password:'',
                 password_confirm:'',
                 name:'',
-                birthdate:'',
+                birthdate: '',
                 gender:'',
                 address:'',
                 phone:'',
