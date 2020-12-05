@@ -20,6 +20,17 @@ router.get('/parsingevaluate', function(req, res, next){
 
 });
 
+router.get('/monitorhistory', function(req, res, next){
+
+    mariadb.query(`SELECT * FROM PARSING_DATA_SEQUENCE_FILE F`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
 router.post('/parsingevaluate', function(req, res, next){
     const params = req.body.params;
     console.log(params)
@@ -73,13 +84,6 @@ router.post('/parsingevaluate', function(req, res, next){
             res.send(false)
         }
     });
-
-    
-
-    
-
-    
-    
     /*
     if(selected_score >= pass_grade){
         
@@ -108,7 +112,6 @@ router.post('/parsingevaluate', function(req, res, next){
     }
     */
     
-
 })
 
 module.exports = router;
