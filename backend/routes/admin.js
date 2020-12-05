@@ -148,31 +148,94 @@ router.post('/taskmanage', function(req, res, next){
 router.post('/taskstatistics', function(req, res, next){
     var response = {
         success : false,
-        all_tasks : [],
-        task_submitee : [],
+        by_task : [],
+        by_orgdt : [],
         message : ''
+    }
+    // sub_id = "hi", participate task = "task1, task2"
+    var by_task_shape = {
+        "task_name" : null,
+        "count_file" : null,
+        "tuple_count" : null,
+        "submitees" : [],
+    }
+
+    var sub_task_json = {
+        "sub_id" : null,
+        "participate_task" : null
+    }
+
+    var by_orgdt_shape = {
+        "dt_id" : null,
+        "count_file" : null,
+        "tuple_count" : null,
     }
 
     // files per each task & (count tuples in passed TDT related to task)
+    var task_count_file_tuple = 
+    `WITH SN
+    AS
+    (SELECT TASK.NAME, COUNT(SERIAL_NUM) AS SN_COUNT \
+    FROM TASK, ORIGINAL_DATA_TYPE AS ODT, ORIGINAL_DATA_SEQUENCE_FILE \
+    WHERE ORIG_DATA_TYPE_ID=ODT.ID AND TASK_NAME=NAME),
+    TTN
+    AS
+    (SELECT TASK.NAME, SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
+    FROM TASK, PARSING_DATA_SEQUENCE_FILE \
+    WHERE TASK_NAME=NAME AND STORE_CONDITION="P")
+    SI
+    AS 
+    (SELECT TASK.NAME, GROUP_CONCAT(SUBMITEE_ID) AS GC_SI \
+    FROM TASK, PARTICIPATES_IN)
+    SELECT SN.NAME, SN_COUNT, SUM_TTN
+    FROM SN, TTN`
     // files per each ORGDT & (count tuples in passed TDT related to ORGDT)
+    var org_count_file_tuple = 
+    `WITH SN
+    AS
+    (SELECT ODT.ID, COUNT(SERIAL_NUM) AS SN_COUNT \
+    FROM ORIGINAL_DATA_TYPE AS ODT, ORIGINAL_DATA_SEQUENCE_FILE \
+    WHERE ORIG_DATA_TYPE_ID=ODT.ID),
+    TTN
+    AS
+    (SELECT ODT.ID, SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
+    FROM ORIGINAL_DATA_TYPE AS ODT, PARSING_DATA_SEQUENCE_FILE \
+    WHERE ORIGINAL_DATA_TYPE_ID=ODT.ID AND STORE_CONDITION="P") \
+    SELECT SN.ID, SN_COUNT, SUM_TTN \
+    FROM SN, TTN`
     // check submitees for each task
+    var sub_each_task = 
+    `SELECT SUBMITEE_ID \
+    FROM PARTICIPATES_IN \
+    WHERE APPROVED=1 AND TASK_NAME=?`
     // check task for each submitee
-    console.log(mariadb.query('SELECT * FROM PARTICIPATES_IN'), function(err1, rows1, fields1){
-        if(!err){
+    var task_each_sub = 
+    `SELECT GROUP_CONCAT(TASK_NAME) AS TN_LIST \
+    FROM PARTICIPATES_IN \
+    WHERE APPROVED=1 AND SUBMITEE_ID=?`
+
+    mariadb.query(task_count_file_tuple, function(err1, rows1, fields1){
+        if(!err1){
             response.success = true;
-            for (var i = 0; i < rows1.length; i++) {
-                t_name = rows1[i].TASK_NAME
-                s_id = rows1[i].SUBMITEE_ID
-                approve = rows1[i].APPROVED
-                if (approve==1){
-                    task_submitee.push([t_name, s_id])
-                }
+            for(i=0; i < rows1.length; i++){
+                tmp_task_shape = by_task_shape
+                tmp_task_shape.task_name = rows1[i].NAME
+                tmp_task_shape.count_file = rows1[i].SN_COUNT
+                tmp_task_shape.tuple_count = rows1[i].SUM_TTN
+                variables = [rows1[i].NAME]
+                mariadb.query(sub_each_task, variables, function(err2, rows2, fields2){
+                    for(j=0; j < rows2.length; j++){
+                        sub_task_json.sub_id = rows2[j].SUBMITEE_ID
+                        mariadb.query(sub_each_task, variables, function(err3, rows3, fields3){
+                            sub_task_json.participate_task = rows3[0].TN_LIST
+                        })
+                        tmp_task_shape.submitees.push(sub_task_json)
+                    }
+                })
             }
         } else {
             response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요."
         }
     })
-
-
 })
 module.exports = router;
