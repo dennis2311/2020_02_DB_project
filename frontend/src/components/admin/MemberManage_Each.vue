@@ -9,7 +9,7 @@
     <div>주소 : {{userData.ADDRESS}} </div>
     <div>전화번호 : {{userData.PHONE}} </div>
     <div>생일 : {{userData.BIRTHDATE}} </div>
-    
+    <br>
     <div v-if="hasTask">[참여 태스크 목록]{{userData.TASK_NAME}}
         <div v-for="task in taskData" v-bind:key="task">{{task.TASK_NAME}}</div>
     </div>

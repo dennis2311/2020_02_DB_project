@@ -3,7 +3,17 @@ var router = express.Router();
 var mariadb = require('../mariadb');
 
 router.get('/membermanage', function(req, res, next) {    
-    mariadb.query(`SELECT ID, ROLE FROM ACCOUNT WHERE ROLE IN (\'ASE\', \'SUB\')`, function(err, rows, fields){
+    mariadb.query(`SELECT ID, ROLE, GENDER, BIRTHDATE FROM ACCOUNT WHERE ROLE IN (\'ASE\', \'SUB\');`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.get('/membermanage_task', function(req, res, next) {    
+    mariadb.query(`SELECT TASK.NAME, ID, ROLE FROM TASK, ACCOUNT, PARTICIPATES_IN WHERE (SUBMITEE_ID=ID) AND (TASK_NAME=TASK.NAME);`, function(err, rows, fields){
         if(!err){
             res.send(JSON.stringify(rows))
         } else {
@@ -22,12 +32,15 @@ router.get('/membermanage/:id', function(req, res, next){
     });
 });
 
-router.get('/membermanage/:id', function(req, res, next){
-    console.log('params : '+req.params)
-    console.log('path : '+req.path)
-    console.log('query : '+req.query)
-    res.send(['awesome user'])
-})
+router.get('/membermanage/:id/task', function(req, res, next){
+    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
 
 router.post('/taskmanage', function(req, res, next){
     const accept = req.body.accept;
