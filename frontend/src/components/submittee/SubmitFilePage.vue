@@ -19,6 +19,7 @@
                     <td>
                         <button> 제출하기 </button>
                     </td>
+                </tr>
             </tbody>
         </table>
     </div>

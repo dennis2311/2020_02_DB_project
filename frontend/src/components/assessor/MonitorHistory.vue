@@ -29,6 +29,7 @@
                     <td>{{file.TOTAL_TUPLE_NUM}}</td>
                     <td>{{file.NULL_RATIO}}</td>
                     <td>{{file.DUPLICATE_TUPLE_NUM}}</td>
+                </tr>
             </tbody>
     </table>
     </div>

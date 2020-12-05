@@ -30,6 +30,7 @@
                     <td>
                         <button @click="apply(index)" type="button"> 신청하기 </button>
                     </td>
+                </tr>
             
             </tbody>
     </table>
