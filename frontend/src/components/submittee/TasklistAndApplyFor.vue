@@ -2,20 +2,39 @@
 <template>
 <div>
     <h3>태스크 목록 및 참가신청 페이지</h3>
-    <div v-for="(task, index) in tasks" v-bind:key="task">
-        <!--<h5>{{index + 1}} {{task.NAME}} <button v-on:click="apply(index)">신청하기</button></h5> -->
-        <h5>{{index + 1}} {{task.NAME}} 
-            <button @click="handle_toggle" type="button"> 신청하기 </button>
-
-            <div v-show="is_show">
-                <h5>개인정보 이용 동의서</h5>
-                <P>태스크에 참가신청을 하려면 개인정보 이용 동의를 해야합니다.</p>
-
-                <button v-on:click="apply(index)"> 동의 후 신청</button>
-            </div>
-        </h5>
-
+    <br>
+    <h5>개인정보 이용 동의서</h5>
+    <P>태스크에 참가신청을 하려면 개인정보 이용 동의를 해야합니다.</p>
+    <button @click="handle_toggle" type="button"> {{agreement}} </button>
+    <div v-show="is_show">
+     <table class='table table-dark' border='2px'>
+        <thead>
+            <tr>
+            <th scope='col'> </th>
+            <th scope='col'>NAME</th>
+            <th scope='col'>TASK_DESCRIPTION</th>
+            <th scope='col'>MIN_UPLOAD_PERIOD</th>
+            <th scope='col'>TASK_TABLE_SCHEMA_INFO</th>
+            <th scope='col'>ADMIN_ID</th>
+            <th scope='col'>신청</th>
+            </tr>
+        </thead>
+            <tbody>
+                <tr v-for="(task, index) in tasks" v-bind:key="task">
+                    <td>{{index + 1}}</td>
+                    <td>{{task.NAME}}</td>
+                    <td>{{task.TASK_DESCRIPTION}}</td>
+                    <td>{{task.MIN_UPLOAD_PERIOD}}</td>
+                    <td>{{task.TASK_TABLE_SCHEMA_INFO}}</td>
+                    <td>{{task.ADMIN_ID}}</td>
+                    <td>
+                        <button @click="apply(index)" type="button"> 신청하기 </button>
+                    </td>
+            
+            </tbody>
+    </table>
     </div>
+
 </div>   
 </template>
 
@@ -35,17 +54,22 @@ export default {
     data: function(){
         return{
             tasks : [],
-            is_show : false
+            is_show : false,
+            agreement : "동의"
         }
     },
 
     methods:{
         handle_toggle(){
-            this.is_show = !this.is_show;
+            this.is_show = !this.is_show
+            if(is_show){
+                this.agreement = "비동의";
+            }else{
+                this.agreement = "동의";
+            }
         },
 
        apply(index){
-           this.is_show = ! this.is_show;
            var taskname = this.tasks[index].NAME;
            var userid = this.$store.state.id;
 

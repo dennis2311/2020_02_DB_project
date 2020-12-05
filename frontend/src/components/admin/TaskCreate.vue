@@ -14,7 +14,7 @@
 
             <div class="form-group">
                 <label for="min_upload_period">최소 업로드 주기 (일)</label>
-                <input type="number" name="min_upload_period" min="0" max="100" step="10" value="30" v-model="user.min_upload_period">
+                <input type="number" name="min_upload_period" min="0" max="100" step="10" v-model="user.min_upload_period">
             </div>
 
             <div class="form-group">
@@ -23,8 +23,9 @@
             </div>
 
             <div class="form-group">
-                <label for="taskTableSchemaInfo">테스크 데이터 테이블 스키마 정보 (,로 띄어 쓰시오)</label>
-                <input type="text" id="taskTableSchemaInfo" v-model="user.taskTableSchemaInfo">
+                <label for="taskTableSchemaInfo">테스크 데이터 테이블 스키마 정보</label>
+                <input type="text" id="taskTableSchemaInfo" v-model="user.taskTableSchemaInfo">     
+                <small id="taskInfoMessage" class="form-text text-muted">attribute 사이는 스페이스바로, attribute와 type 사이는 콤마(,)로 연결하시오.</small>
             </div>
 
             <button>테스크 생성</button>
