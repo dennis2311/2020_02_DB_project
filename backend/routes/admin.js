@@ -38,32 +38,49 @@ router.post('/taskcreate', function(req, res, next){
                 res.json(response);
             }
         });
-        mariadb.query(`INSERT INTO TASK (NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, TASK_TABLE_NAME, TASK_TABLE_SCHEMA_INFO,ADMIN_ID) VALUES (\'${user.taskName}\', \'${user.taskDescription}\', \'${user.min_upload_period}\',\'${user.taskTableName}\',\'${user.taskTableSchemaInfo}\', 'admin')`, function(err,rows, fields){
-            if(!err){
-                // query change
-                mariadb.query(`CREATE TABLE customers (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))`, function(err,rows, fields){
+        mariadb.query(`INSERT INTO TASK (NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, TASK_TABLE_NAME, TASK_TABLE_SCHEMA_INFO,ADMIN_ID) \
+        VALUES (\'${user.taskName}\', \'${user.taskDescription}\', \'${user.min_upload_period}\',\'${user.taskTableName}\',\'${user.taskTableSchemaInfo}\', \
+        'admin')`, function(err,rows, fields){
+                const attr = user.taskTableSchemaInfo.split(' ')
+                var tableName = user.taskTableName
+                mariadb.query(`CREATE TABLE ?? (ID INT AUTO_INCREMENT PRIMARY KEY, TASK_NAME VARCHAR(30), SUBMITTEE_NAME VARCHAR(30),DATA_TYPE_FLAG VARCHAR(30))`, [tableName], function(err,rows, fields){
                     if(!err){
-                        response.success = true
-                        response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
-                        res.json(response);
+                        for(var i=0;i<attr.length;i++){
+                            var temp = attr[i].split(',')
+                            mariadb.query(``, function(err,rows, fields){
+                                if(!err && i==attr.length-1){
+                                    response.success = true
+                                    response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
+                                    res.json(response);
+                                } else {
+                                    console.log(err)
+                                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                                    res.json(response);
+                                }
+                            });
+                        }
                     } else {
                         console.log(err)
                         response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
                         res.json(response);
                     }
                 });
-                
-            } else {
-                console.log(err)
-                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
-                res.json(response);
-            }
         });
     }
 });
 
 router.get('/membermanage', function(req, res, next) {    
-    mariadb.query(`SELECT ID, ROLE FROM ACCOUNT WHERE ROLE IN (\'ASE\', \'SUB\')`, function(err, rows, fields){
+    mariadb.query(`SELECT ID, ROLE, GENDER, BIRTHDATE FROM ACCOUNT WHERE ROLE IN (\'ASE\', \'SUB\');`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.get('/membermanage_task', function(req, res, next) {    
+    mariadb.query(`SELECT TASK.NAME, ID, ROLE FROM TASK, ACCOUNT, PARTICIPATES_IN WHERE (SUBMITEE_ID=ID) AND (TASK_NAME=TASK.NAME);`, function(err, rows, fields){
         if(!err){
             res.send(JSON.stringify(rows))
         } else {
@@ -82,12 +99,26 @@ router.get('/membermanage/:id', function(req, res, next){
     });
 });
 
-router.get('/membermanage/:id', function(req, res, next){
-    console.log('params : '+req.params)
-    console.log('path : '+req.path)
-    console.log('query : '+req.query)
-    res.send(['awesome user'])
-})
+router.get('/membermanage/:id/task', function(req, res, next){
+    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.get('/membermanage/:id/:taskname', function(req, res, next){
+    
+    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
 
 router.post('/taskmanage', function(req, res, next){
     const accept = req.body.accept;
