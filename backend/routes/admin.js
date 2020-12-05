@@ -102,6 +102,17 @@ router.get('/membermanage/:id/task', function(req, res, next){
     });
 });
 
+router.get('/membermanage/:id/:taskname', function(req, res, next){
+    
+    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
 router.post('/taskmanage', function(req, res, next){
     const accept = req.body.accept;
     const pass_grade = req.body.pass_grade;

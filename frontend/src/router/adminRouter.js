@@ -4,6 +4,7 @@ import TaskManage from '../components/admin/TaskManage'
 import TaskStatistics from '../components/admin/TaskStatistics'
 import MemberManage from '../components/admin/MemberManage'
 import MemberManage_Each from '../components/admin/MemberManage_Each'
+import MemberManage_EachDetail from '../components/admin/MemberManage_EachDetail'
 
 export default [
     {
@@ -35,5 +36,10 @@ export default [
         path: '/admin/membermanage/:id',
         name: 'MemberManage_Each',
         component: MemberManage_Each
+      },
+      {
+        path: '/admin/membermanage/:id/:taskname',
+        name: 'MemberManage_Each',
+        component: MemberManage_EachDetail
       },
 ]

@@ -7,7 +7,7 @@
     <input type="radio" id="role" value="ROLE" v-model="sort">
     <label for="ROLE">역할</label>
     <input type="radio" id="age" value="AGE" v-model="sort">
-    <label for="AGE">나이대</label>
+    <label for="AGE">나이</label>
     <input type="radio" id="gender" value="GENDER" v-model="sort">
     <label for="GENDER">성별</label>
     <input type="radio" id="task" value="TASK" v-model="sort">
@@ -19,6 +19,11 @@
     <div v-if="sort==='ROLE'">
         <button v-on:click="showASE">평가자만 보기</button>
         <button v-on:click="showSUB">제출자만 보기</button>
+    </div>
+    <div v-if="sort==='AGE'">
+        <input type="text" id="id" placeholder="최소 나이" v-model="minAge">이상 
+        <input type="text" id="id" placeholder="최대 나이" v-model="maxAge">이하 
+        <button v-on:click="searchAGE">검색</button>
     </div>
     <div v-else-if="sort==='GENDER'">
         <button v-on:click="showMALE">남성만 보기</button>
@@ -71,6 +76,8 @@ export default {
             tasks : [],
             users_shown : [],
             isUserMatch : true,
+            minAge : 0,
+            maxAge : 200,
             searchID : '',
             searchTASK : '',
             sort : ''
@@ -103,6 +110,28 @@ export default {
                     this.users_shown.push(this.users[i])
                 }
             }
+            if(this.users_shown.length===0){
+                this.isUserMatch = false
+            } else {
+                this.isUserMatch = true
+            }
+        },
+        searchAGE:function(event){
+            event.preventDefault()
+            const year = new Date().getFullYear()
+            this.users_shown = []
+            for(var i = 0 ; i<this.users.length ; i++){
+                if(this.users[i].BIRTHDATE===null){
+                    continue
+                } else {
+                    var userYear = this.users[i].BIRTHDATE.substring(0,4)*1
+                    if(this.minAge <= userYear-year+1 <= this.maxAge){
+                        this.users_shown.push(this.users[i])
+                    }
+                }
+            }
+            this.minAge = 0
+            this.maxAge = 200
             if(this.users_shown.length===0){
                 this.isUserMatch = false
             } else {
