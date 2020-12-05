@@ -20,4 +20,15 @@ router.get('/parsingevaluate', function(req, res, next){
 
 });
 
+router.get('/monitorhistory', function(req, res, next){
+
+    mariadb.query(`SELECT * FROM PARSING_DATA_SEQUENCE_FILE F`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
 module.exports = router;

@@ -52,5 +52,24 @@ router.get('/tasklist/:taskname/:userid', function(req, res, next) {
 
 });
 
+router.get('/approvedtasks', function(req, res, next) {
+
+    var response = {
+        success : false,
+        tasks : [],
+        message : ''
+    }
+
+    mariadb.query(`SELECT TASK_NAME, APPROVED FROM PARTICIPATES_IN`, function(err, rows, fields){
+        if(!err){
+            response.success = true
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+        
+    });
+
+});
 
 module.exports = router;
