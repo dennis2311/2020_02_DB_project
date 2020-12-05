@@ -24,7 +24,8 @@
 
             <div class="form-group">
                 <label for="taskTableSchemaInfo">테스크 데이터 테이블 스키마 정보</label>
-                <input type="text" id="taskTableSchemaInfo" v-model="user.taskTableSchemaInfo">     
+                <input type="text" id="taskTableSchemaInfo" v-model="user.taskTableSchemaInfo">
+                <br>     
                 <small id="taskInfoMessage" class="form-text text-muted">attribute 사이는 스페이스바로, attribute와 type 사이는 콤마(,)로 연결하시오.</small>
             </div>
 
