@@ -10,8 +10,43 @@
     <div>전화번호 : {{userData.PHONE}} </div>
     <div>생일 : {{userData.BIRTHDATE}} </div>
     <br>
-    <div v-if="hasTask">[참여 태스크 목록]{{userData.TASK_NAME}}
-        <div v-for="task in taskData" v-bind:key="task">{{task.TASK_NAME}}</div>
+    <div v-if="hasTask">
+        <div v-if="userData.ROLE==='제출자'">
+            [참여 태스크 목록]
+            <table class='table table-dark' border='2px'>
+                <thead>
+                    <tr>
+                    <th scope='col'> </th>
+                    <th scope='col'>태스크명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(task, index) in taskData" v-bind:key="task">
+                        <td>{{index + 1}}</td>
+                        <td>{{task.TASK_NAME}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div v-else>
+            [평가한 파일 목록]
+            <table class='table table-dark' border='2px'>
+                <thead>
+                    <tr>
+                    <th scope='col'> </th>
+                    <th scope='col'>태스크명</th>
+                    <th scope='col'>평가 파일</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(task, index) in taskData" v-bind:key="task">
+                        <td>{{index + 1}}</td>
+                        <td>{{task.TASK_NAME}}</td>
+                        <td>{{task.PARSED_FILE}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div v-else>(사용자가 참여중인 태스크가 없습니다)</div>
 </div>
@@ -44,7 +79,6 @@ export default {
             .catch(function(error){
                 alert(error)
             })
-
             this.$http.get(`/api/admin/membermanage/${id}/task`)
             .then(res=>{
                 if(res.data[0]!==undefined){

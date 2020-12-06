@@ -110,20 +110,25 @@ router.get('/membermanage/:id', function(req, res, next){
 });
 
 router.get('/membermanage/:id/task', function(req, res, next){
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+    mariadb.query(`SELECT ROLE FROM ACCOUNT WHERE ID=\'${req.params.id}\';`, function(err,rows,fields){
         if(!err){
-            res.send(JSON.stringify(rows))
-        } else {
-            res.send(false)
-        }
-    });
-});
-
-router.get('/membermanage/:id/:taskname', function(req, res, next){
-    
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
-        if(!err){
-            res.send(JSON.stringify(rows))
+            if(rows[0].ROLE==='SUB'){
+                mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            } else {
+                mariadb.query(`SELECT TASK_NAME, PARSED_FILE FROM PARSING_DATA_SEQUENCE_FILE WHERE ASSESSOR_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            }
         } else {
             res.send(false)
         }
