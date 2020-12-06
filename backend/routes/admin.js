@@ -41,31 +41,88 @@ router.post('/taskcreate', function(req, res, next){
         mariadb.query(`INSERT INTO TASK (NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, TASK_TABLE_NAME, TASK_TABLE_SCHEMA_INFO,ADMIN_ID) \
         VALUES (\'${user.taskName}\', \'${user.taskDescription}\', \'${user.min_upload_period}\',\'${user.taskTableName}\',\'${user.taskTableSchemaInfo}\', \
         'admin')`, function(err,rows, fields){
-                const attr = user.taskTableSchemaInfo.split(' ')
+            if(!err){
+                var attr = user.taskTableSchemaInfo.split(',')
                 var tableName = user.taskTableName
                 mariadb.query(`CREATE TABLE ?? (ID INT AUTO_INCREMENT PRIMARY KEY, TASK_NAME VARCHAR(30), SUBMITTEE_NAME VARCHAR(30),DATA_TYPE_FLAG VARCHAR(30))`, [tableName], function(err,rows, fields){
                     if(!err){
                         for(var i=0;i<attr.length;i++){
-                            var temp = attr[i].split(',')
-                            mariadb.query(``, function(err,rows, fields){
-                                if(!err && i==attr.length-1){
-                                    response.success = true
-                                    response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
-                                    res.json(response);
-                                } else {
+                            mariadb.query('ALTER TABLE ' + tableName + ' ADD COLUMN ' + attr[i], function(err,rows, fields){
+                                if (err){
                                     console.log(err)
-                                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
-                                    res.json(response);
+                                    response.message = "서버 오류입니다. 테스크 데이터 스키마 정보를 올바른 포맷으로 작성해주시기 바랍니다.";
                                 }
                             });
                         }
+                        response.success = true;
+                        response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
+                        res.json(response);
                     } else {
                         console.log(err)
                         response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
                         res.json(response);
                     }
                 });
-        });
+            } else {
+                console.log(err)
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                res.json(response);
+            }
+        });         
+    }
+});
+
+router.get('/defineoriginaldatatype', function(req, res, next) {    
+    mariadb.query(`SELECT NAME FROM TASK;`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.get('/defineoriginaldatatype/:taskName', function(req, res, next){
+    mariadb.query(`SELECT TASK_TABLE_SCHEMA_INFO, NAME FROM TASK WHERE NAME=\'${req.params.taskName}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.post('/create', function(req, res, next){
+    console.log("요청이 왔습니다.")
+    const user = req.body.user
+    
+    var response = {
+        success : false,
+        message : ''
+    }
+
+    if (user.name===''){
+        console.log("if 1")
+        response.message = 'original data type 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.originalDataSchemaInfo===''){
+        console.log("if 2")
+        response.message = 'original data type 스키마 정보는 필수 항목입니다.';
+        res.json(response);
+    }
+    else {
+        console.log("DB 요청합니다.")
+        mariadb.query(`INSERT INTO ORIGINAL_DATA_TYPE (NAME, SCHEMA_INFO, TASK_NAME) VALUES (\'${user.name}\', \'${user.originalDataSchemaInfo}\', \'${user.task_name}\')`, function(err, rows, fields){
+            if(!err){
+                response.success = true;
+                response.message = 'original data type 생성이 완료되었습니다. 관리자 메인 페이지로 이동합니다.';
+                res.json(response);
+            } else {
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+                res.json(response);
+            }
+        });        
     }
 });
 
@@ -89,6 +146,16 @@ router.get('/membermanage_task', function(req, res, next) {
     });
 });
 
+router.get('/membermanage_taskname', function(req, res, next) {    
+    mariadb.query(`SELECT NAME FROM TASK;`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+})
+
 router.get('/membermanage/:id', function(req, res, next){
     mariadb.query(`SELECT NAME, ID, BIRTHDATE, GENDER, ADDRESS, PHONE, ROLE, EVALUATION_GRADE FROM ACCOUNT WHERE ID=\'${req.params.id}\';`, function(err,rows,fields){
         if(!err){
@@ -100,20 +167,25 @@ router.get('/membermanage/:id', function(req, res, next){
 });
 
 router.get('/membermanage/:id/task', function(req, res, next){
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+    mariadb.query(`SELECT ROLE FROM ACCOUNT WHERE ID=\'${req.params.id}\';`, function(err,rows,fields){
         if(!err){
-            res.send(JSON.stringify(rows))
-        } else {
-            res.send(false)
-        }
-    });
-});
-
-router.get('/membermanage/:id/:taskname', function(req, res, next){
-    
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
-        if(!err){
-            res.send(JSON.stringify(rows))
+            if(rows[0].ROLE==='SUB'){
+                mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            } else {
+                mariadb.query(`SELECT TASK_NAME, PARSED_FILE FROM PARSING_DATA_SEQUENCE_FILE WHERE ASSESSOR_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            }
         } else {
             res.send(false)
         }
@@ -175,98 +247,181 @@ router.post('/taskmanage', function(req, res, next){
         }
     })
 })
-
-router.post('/taskstatistics', function(req, res, next){
+router.get('/taskstatistics', function(req, res, next){
     var response = {
+        task_names : [],
+        orgdt_ids : [],
+        sub_ids : [],
         success : false,
-        by_task : [],
-        by_orgdt : [],
-        message : ''
-    }
-    // sub_id = "hi", participate task = "task1, task2"
-    var by_task_shape = {
-        "task_name" : null,
-        "count_file" : null,
-        "tuple_count" : null,
-        "submitees" : [],
+        message : "",
     }
 
-    var sub_task_json = {
-        "sub_id" : null,
-        "participate_task" : null
+    mariadb.query("SELECT DISTINCT(NAME) FROM TASK", function(err, rows, fields){
+        if(!err){
+            response.success = true
+            for(var i=0; i < rows.length; i++){
+                response.task_names.push(rows[i].NAME)
+            }
+            mariadb.query("SELECT DISTINCT(ID) FROM ORIGINAL_DATA_TYPE", function(err, rows, fields){
+                for(var j=0; j< rows.length; j++){
+                    response.orgdt_ids.push(rows[j].ID)
+                }
+                mariadb.query("SELECT DISTINCT(SUBMITEE_ID) FROM PARTICIPATES_IN WHERE APPROVED=1", function(err, rows, fields){
+                    for(var k=0; k< rows.length; k++){
+                        response.sub_ids.push(rows[k].SUBMITEE_ID)
+                    }
+                    res.send(response)
+                })
+            })
+        } else {
+            res.send(response)
+        }
+    })
+})
+
+router.post('/taskstatistics_click', function(req, res, next){
+    const req_case = req.body.req_case
+    const task_file_num = req.body.task_file_num //TASK NAME(STRING)
+    const task_count_tuple = req.body.task_count_tuple //TASK NAME(STRING)
+    const orgdt_file_num = req.body.orgdt_file_num //ORGDT ID(STRING)
+    const orgdt_count_tuple = req.body.orgdt_count_tuple //ORGDT ID(STRING)
+    const sub_per_task = req.body.sub_per_task //TASK NAME(STRING)
+    const task_per_sub = req.body.task_per_sub //SUB ID(STRING)
+    const task_dt_download = req.body.task_dt_download //TASK NAME(STRING)
+    const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+    var response = {
+        message : "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.",
     }
 
-    var by_orgdt_shape = {
-        "dt_id" : null,
-        "count_file" : null,
-        "tuple_count" : null,
-    }
+    var qry = ""
+    var variable = []
+    if (req_case == 1){
+        // num of file for task
+        qry = "SELECT COUNT(ID) AS SN_COUNT \
+        FROM PARSING_DATA_SEQUENCE_FILE \
+        WHERE TASK_NAME=?"
+        variable = [task_file_num]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].SN_COUNT
+            if(response.message == null){
+                response.message = 0
+            }
+            res.send(response)
+        })
+    } else if (req_case == 2){
+        // passed & saved number of tuple for task
+        qry = `SELECT SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
+        FROM PARSING_DATA_SEQUENCE_FILE \
+        WHERE TASK_NAME=? AND STORE_CONDITION="P"`
+        variable = [task_count_tuple]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].SUM_TTN
+            if(response.message == null){
+                response.message = 0
+            }
+            res.send(response)
+        })
+    } else if (req_case == 3){
+        // num of file for ORGDT
+        qry = `SELECT COUNT(ID) AS SN_COUNT \
+        FROM PARSING_DATA_SEQUENCE_FILE \
+        WHERE ORIGINAL_DATA_TYPE_ID=?`
+        variable = [orgdt_file_num]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].SN_COUNT
+            if(response.message == null){
+                response.message = 0
+            }
+            res.send(response)
+        })
+    } else if (req_case == 4){
+        // passed & saved number of tuple for ORDGT
+        qry = `SELECT SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
+        FROM PARSING_DATA_SEQUENCE_FILE \
+        WHERE ORIGINAL_DATA_TYPE_ID=? AND STORE_CONDITION="NP"`
+        variable = [orgdt_count_tuple]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].SUM_TTN
+            if(response.message == null){
+                response.message = 0
+            }
+            res.send(response)
+        })
+    } else if (req_case == 5){
+        // submitee per task
+        qry = `SELECT GROUP_CONCAT(SUBMITEE_ID) AS GC_SI \
+        FROM PARTICIPATES_IN WHERE TASK_NAME=? AND APPROVED=1`
+        variable = [sub_per_task]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].GC_SI
+            if(response.message == null){
+                response.message = "참여 제출자 없음"
+            }
+            res.send(response)
+        })
+    } else if (req_case == 6){
+        // task per submitee
+        qry = `SELECT GROUP_CONCAT(TASK_NAME) AS GC_TN \
+        FROM PARTICIPATES_IN WHERE SUBMITEE_ID=? AND APPROVED=1`
+        variable = [task_per_sub]
+        mariadb.query(qry, variable, function(err, rows, feilds){
+            response.message = rows[0].GC_TN
+            if(response.message == null){
+                response.message = "참여 태스크 없음"
+            }
+            res.send(response)
+        })
+    } else if (req_case == 7){
+        // task per submitee
+        // get task data table name
+        qry1 = `SELECT TASK_TABLE_NAME FROM TASK WHERE NAME=?`
 
-    // files per each task & (count tuples in passed TDT related to task)
-    var task_count_file_tuple = 
-    `WITH SN
-    AS
-    (SELECT TASK.NAME, COUNT(SERIAL_NUM) AS SN_COUNT \
-    FROM TASK, ORIGINAL_DATA_TYPE AS ODT, ORIGINAL_DATA_SEQUENCE_FILE \
-    WHERE ORIG_DATA_TYPE_ID=ODT.ID AND TASK_NAME=NAME),
-    TTN
-    AS
-    (SELECT TASK.NAME, SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
-    FROM TASK, PARSING_DATA_SEQUENCE_FILE \
-    WHERE TASK_NAME=NAME AND STORE_CONDITION="P")
-    SI
-    AS 
-    (SELECT TASK.NAME, GROUP_CONCAT(SUBMITEE_ID) AS GC_SI \
-    FROM TASK, PARTICIPATES_IN)
-    SELECT SN.NAME, SN_COUNT, SUM_TTN
-    FROM SN, TTN`
-    // files per each ORGDT & (count tuples in passed TDT related to ORGDT)
-    var org_count_file_tuple = 
-    `WITH SN
-    AS
-    (SELECT ODT.ID, COUNT(SERIAL_NUM) AS SN_COUNT \
-    FROM ORIGINAL_DATA_TYPE AS ODT, ORIGINAL_DATA_SEQUENCE_FILE \
-    WHERE ORIG_DATA_TYPE_ID=ODT.ID),
-    TTN
-    AS
-    (SELECT ODT.ID, SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
-    FROM ORIGINAL_DATA_TYPE AS ODT, PARSING_DATA_SEQUENCE_FILE \
-    WHERE ORIGINAL_DATA_TYPE_ID=ODT.ID AND STORE_CONDITION="P") \
-    SELECT SN.ID, SN_COUNT, SUM_TTN \
-    FROM SN, TTN`
-    // check submitees for each task
-    var sub_each_task = 
-    `SELECT SUBMITEE_ID \
-    FROM PARTICIPATES_IN \
-    WHERE APPROVED=1 AND TASK_NAME=?`
-    // check task for each submitee
-    var task_each_sub = 
-    `SELECT GROUP_CONCAT(TASK_NAME) AS TN_LIST \
-    FROM PARTICIPATES_IN \
-    WHERE APPROVED=1 AND SUBMITEE_ID=?`
+        variable = [task_dt_download]
 
-    mariadb.query(task_count_file_tuple, function(err1, rows1, fields1){
-        if(!err1){
-            response.success = true;
-            for(i=0; i < rows1.length; i++){
-                tmp_task_shape = by_task_shape
-                tmp_task_shape.task_name = rows1[i].NAME
-                tmp_task_shape.count_file = rows1[i].SN_COUNT
-                tmp_task_shape.tuple_count = rows1[i].SUM_TTN
-                variables = [rows1[i].NAME]
-                mariadb.query(sub_each_task, variables, function(err2, rows2, fields2){
-                    for(j=0; j < rows2.length; j++){
-                        sub_task_json.sub_id = rows2[j].SUBMITEE_ID
-                        mariadb.query(sub_each_task, variables, function(err3, rows3, fields3){
-                            sub_task_json.participate_task = rows3[0].TN_LIST
-                        })
-                        tmp_task_shape.submitees.push(sub_task_json)
+        mariadb.query(qry1, variable, function(err, rows, fields){
+            if(rows == null){
+                res.send(response)
+            }
+            else{
+                mariadb.query('SELECT * FROM ' + rows[0].TASK_TABLE_NAME, function(err, rows, fields){
+                    if(!err){
+                        if(rows[0] == null){
+                            response.message = "저장할 태스크 없음"
+                            res.send(response)
+                        }
+                        else{
+                            var keys = Object.keys(rows[0]);
+                            var header_list = []
+                            for (var i = 0; i < keys.length; i++) {
+                                header_list.push({id: keys[i], title: keys[i]})
+                            }
+                            
+                            const csvWriter = createCsvWriter({
+                                path: 'output.csv',
+                                header: header_list
+                            });
+
+                            var data_list = []
+                            for (var i=0; i< rows.length; i++){
+                                data_list.push(JSON.parse(JSON.stringify(rows[i])))
+                            }
+                            const data = data_list;
+
+                            response.message = "'output.csv'로 저장되었습니다"
+                            
+                            csvWriter
+                            .writeRecords(data)
+                            .then(()=> console.log('The CSV file was written successfully'));
+                            res.send(response)
+                        }
+                    } 
+                    else{
+                        res.send(response)
                     }
                 })
             }
-        } else {
-            response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요."
-        }
-    })
+        })
+    }
 })
 module.exports = router;
