@@ -33,6 +33,7 @@ and receives the qualitative evaluation of parsing data sequence files . -->
                         </select>
                         <button v-on:click="apply(index)"> 제출 </button>
                     </td>
+                </tr>
             </tbody>
     </table>
 </div>   
@@ -47,7 +48,8 @@ export default {
             alert("권한이 없습니다")
             this.$router.go(-1)
         } else {
-            this.$http.get('/api/assessor/parsingevaluate')
+            var userid = this.$store.state.id;
+            this.$http.get(`/api/assessor/parsingevaluate/${userid}`)
             .then(res => {
                 this.files = res.data
                 for(var i=0; i<(res.data).length; i++){
@@ -81,7 +83,8 @@ export default {
                 userid:'',
                 selected_score:0,
                 fileid:0,
-                taskname:''
+                taskname:'',
+                original_data_type_id:0
             }
         }
     },
@@ -92,6 +95,7 @@ export default {
            this.params.selected_score = this.selected[index];
            this.params.fileid = this.files[index].ID;
            this.params.taskname = this.files[index].TASK_NAME;
+           this.params.original_data_type_id = this.files[index].ORIGINAL_DATA_TYPE_ID;
 
            this.$http.post(`/api/assessor/parsingevaluate`,{
                params:this.params
