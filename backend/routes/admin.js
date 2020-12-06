@@ -41,31 +41,88 @@ router.post('/taskcreate', function(req, res, next){
         mariadb.query(`INSERT INTO TASK (NAME, TASK_DESCRIPTION, MIN_UPLOAD_PERIOD, TASK_TABLE_NAME, TASK_TABLE_SCHEMA_INFO,ADMIN_ID) \
         VALUES (\'${user.taskName}\', \'${user.taskDescription}\', \'${user.min_upload_period}\',\'${user.taskTableName}\',\'${user.taskTableSchemaInfo}\', \
         'admin')`, function(err,rows, fields){
-                const attr = user.taskTableSchemaInfo.split(' ')
+            if(!err){
+                var attr = user.taskTableSchemaInfo.split(',')
                 var tableName = user.taskTableName
                 mariadb.query(`CREATE TABLE ?? (ID INT AUTO_INCREMENT PRIMARY KEY, TASK_NAME VARCHAR(30), SUBMITTEE_NAME VARCHAR(30),DATA_TYPE_FLAG VARCHAR(30))`, [tableName], function(err,rows, fields){
                     if(!err){
                         for(var i=0;i<attr.length;i++){
-                            var temp = attr[i].split(',')
-                            mariadb.query(``, function(err,rows, fields){
-                                if(!err && i==attr.length-1){
-                                    response.success = true
-                                    response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
-                                    res.json(response);
-                                } else {
+                            mariadb.query('ALTER TABLE ' + tableName + ' ADD COLUMN ' + attr[i], function(err,rows, fields){
+                                if (err){
                                     console.log(err)
-                                    response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
-                                    res.json(response);
+                                    response.message = "서버 오류입니다. 테스크 데이터 스키마 정보를 올바른 포맷으로 작성해주시기 바랍니다.";
                                 }
                             });
                         }
+                        response.success = true;
+                        response.message = '테스크 생성이 완료되었습니다. 오리지널 데이터 타입 생성 페이지로 이동합니다.';
+                        res.json(response);
                     } else {
                         console.log(err)
                         response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
                         res.json(response);
                     }
                 });
-        });
+            } else {
+                console.log(err)
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하시기 바랍니다.";
+                res.json(response);
+            }
+        });         
+    }
+});
+
+router.get('/defineoriginaldatatype', function(req, res, next) {    
+    mariadb.query(`SELECT NAME FROM TASK;`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.get('/defineoriginaldatatype/:taskName', function(req, res, next){
+    mariadb.query(`SELECT TASK_TABLE_SCHEMA_INFO, NAME FROM TASK WHERE NAME=\'${req.params.taskName}\';`, function(err,rows,fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+});
+
+router.post('/create', function(req, res, next){
+    console.log("요청이 왔습니다.")
+    const user = req.body.user
+    
+    var response = {
+        success : false,
+        message : ''
+    }
+
+    if (user.name===''){
+        console.log("if 1")
+        response.message = 'original data type 이름은 필수 항목입니다.';
+        res.json(response);
+    }
+    else if (user.originalDataSchemaInfo===''){
+        console.log("if 2")
+        response.message = 'original data type 스키마 정보는 필수 항목입니다.';
+        res.json(response);
+    }
+    else {
+        console.log("DB 요청합니다.")
+        mariadb.query(`INSERT INTO ORIGINAL_DATA_TYPE (NAME, SCHEMA_INFO, TASK_NAME) VALUES (\'${user.name}\', \'${user.originalDataSchemaInfo}\', \'${user.task_name}\')`, function(err, rows, fields){
+            if(!err){
+                response.success = true;
+                response.message = 'original data type 생성이 완료되었습니다. 관리자 메인 페이지로 이동합니다.';
+                res.json(response);
+            } else {
+                response.message = "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.";
+                res.json(response);
+            }
+        });        
     }
 });
 
@@ -110,20 +167,25 @@ router.get('/membermanage/:id', function(req, res, next){
 });
 
 router.get('/membermanage/:id/task', function(req, res, next){
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+    mariadb.query(`SELECT ROLE FROM ACCOUNT WHERE ID=\'${req.params.id}\';`, function(err,rows,fields){
         if(!err){
-            res.send(JSON.stringify(rows))
-        } else {
-            res.send(false)
-        }
-    });
-});
-
-router.get('/membermanage/:id/:taskname', function(req, res, next){
-    
-    mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
-        if(!err){
-            res.send(JSON.stringify(rows))
+            if(rows[0].ROLE==='SUB'){
+                mariadb.query(`SELECT TASK_NAME FROM PARTICIPATES_IN WHERE SUBMITEE_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            } else {
+                mariadb.query(`SELECT TASK_NAME, PARSED_FILE FROM PARSING_DATA_SEQUENCE_FILE WHERE ASSESSOR_ID=\'${req.params.id}\';`, function(err,rows,fields){
+                    if(!err){
+                        res.send(JSON.stringify(rows))
+                    } else {
+                        res.send(false)
+                    }
+                });
+            }
         } else {
             res.send(false)
         }
