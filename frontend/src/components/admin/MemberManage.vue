@@ -35,7 +35,11 @@
         <button v-on:click="findById">검색</button>
     </div>
     <div v-else-if="sort==='TASK'">
-        <input type="text" id="taskname" placeholder="태스크명" v-model="searchTASK">
+        <select v-model="searchTASK">
+            <option v-for="task in taskNames" v-bind:value="task.NAME" v-bind:key="task.NAME">
+                {{ task.NAME }}
+            </option>
+        </select>
         <button v-on:click="findByTask">검색</button>
     </div>
     
@@ -68,12 +72,17 @@ export default {
             .then(res=>{
                 this.tasks = res.data
             })
+            this.$http.get('/api/admin/membermanage_taskname')
+            .then(res=>{
+                this.taskNames = res.data
+            })
         }
     },
     data: function(){
         return{
             users : [],
             tasks : [],
+            taskNames : [],
             users_shown : [],
             isUserMatch : true,
             minAge : 0,

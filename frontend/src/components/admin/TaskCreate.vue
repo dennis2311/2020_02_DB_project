@@ -26,7 +26,7 @@
                 <label for="taskTableSchemaInfo">테스크 데이터 테이블 스키마 정보</label>
                 <input type="text" id="taskTableSchemaInfo" v-model="user.taskTableSchemaInfo">
                 <br>     
-                <small id="taskInfoMessage" class="form-text text-muted">attribute 사이는 스페이스바로, attribute와 type 사이는 콤마(,)로 연결하시오.</small>
+                <small id="taskInfoMessage" class="form-text text-muted">attribute 사이는 콤마(,)로 연결하시오. ex) num INT,name VARCHAR(30)</small>
             </div>
 
             <button>테스크 생성</button>
