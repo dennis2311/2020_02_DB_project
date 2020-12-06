@@ -9,7 +9,7 @@ and receives the qualitative evaluation of parsing data sequence files . -->
         <thead>
             <tr>
             <th scope='col'> </th>
-            <th scope='col'>ORIGINAL_DATA_TYPE_ID</th>
+            <th scope='col'>ORIGINAL_DATA_TYPE</th>
             <th scope='col'>TASK_NAME</th>
             <th scope='col'>TOTAL_TUPLE_NUM</th>
             <th scope='col'>NULL_RATIO</th>
@@ -20,7 +20,7 @@ and receives the qualitative evaluation of parsing data sequence files . -->
             <tbody>
                 <tr v-for="(file, index) in files" v-bind:key="file">
                     <td>{{index + 1}}</td>
-                    <td>{{file.ORIGINAL_DATA_TYPE_ID}}</td>
+                    <td>{{file.NAME}}</td>
                     <td>{{file.TASK_NAME}}</td>
                     <td>{{file.TOTAL_TUPLE_NUM}}</td>
                     <td>{{file.NULL_RATIO}}</td>

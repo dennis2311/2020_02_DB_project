@@ -12,7 +12,7 @@ router.get('/parsingevaluate/:userid', function(req, res, next){
  
     const userid = req.params.userid
 
-    mariadb.query(`SELECT ID, ORIGINAL_DATA_TYPE_ID, TASK_NAME, TOTAL_TUPLE_NUM, NULL_RATIO, DUPLICATE_TUPLE_NUM FROM PARSING_DATA_SEQUENCE_FILE WHERE ASSESSOR_ID = \'${userid}\' AND EVALUATION_STATE = 0`, function(err, rows, fields){
+    mariadb.query(`SELECT P.ID, O.NAME, P.TASK_NAME, P.TOTAL_TUPLE_NUM, P.NULL_RATIO, P.DUPLICATE_TUPLE_NUM FROM PARSING_DATA_SEQUENCE_FILE AS P, ORIGINAL_DATA_TYPE AS O WHERE P.ASSESSOR_ID = \'${userid}\' AND P.EVALUATION_STATE = 0 AND P.ORIGINAL_DATA_TYPE_ID = O.ID`, function(err, rows, fields){
         if(!err){
             res.send(JSON.stringify(rows))
         } else {
@@ -188,5 +188,101 @@ router.post('/parsingevaluate', function(req, res, next){
     */
     
 })
+
+router.post('/evalgrademanage', function(req, res, next){
+    const params = req.body.params;
+
+    var response = {
+        pdsFiles : [],
+        submiteeID : [],
+        assessAll : false,
+        pdsFilesForSubmitee : [],
+        evalGrade : [],
+        success: false,
+        message : '',
+
+    }
+
+
+    console.log('params.asrID')
+    
+    mariadb.query(`SELECT COUNT(EVALUATION_STATE) AS cnt FROM PARSING_DATA_SEQUENCE_FILE WHERE  ASSESSOR_ID = \'${params.asrID}\' AND EVALUATION_STATE = 0`, function(err, rows0, fields0){
+        if(!err){
+            console.log(rows0)
+
+            if(rows0[0].cnt == 0){
+
+                params.assessAll = true
+                
+                mariadb.query(`SELECT SUBMITTEE_ID FROM PARSING_DATA_SEQUENCE_FILE WHERE  ASSESSOR_ID = \'${params.asrID}\' AND EVALUATION_STATE = 1`, function(err, rows, fields){ 
+                    if(!err){
+                        // params.submiteeID = 
+                        console.log(rows)
+                        response.pdsFiles.push(rows)
+                        for(var i=0; i< rows.length; i++){
+                            console.log(i)
+                            console.log(rows[i])
+
+                            var numFiles
+
+                            mariadb.query(`SELECT COUNT(SUBMITTEE_ID) AS CNT FROM PARSING_DATA_SEQUENCE_FILE WHERE SUBMITTEE_ID = \'${rows[i].SUBMITTEE_ID}\'  `,function(err, rows1, fields1){
+                                numFiles = rows1[0].CNT
+                                // console.log(rows1[0].CNT)
+                            })
+
+                            mariadb.query(`SELECT SUBMITTEE_ID, OGDSF_SERIAL_NUM, DATA_QUALITY_GRADE, TOTAL_TUPLE_NUM, NULL_RATIO, DUPLICATE_TUPLE_NUM FROM PARSING_DATA_SEQUENCE_FILE WHERE (ORIGINAL_DATA_TYPE_ID, OGDSF_SERIAL_NUM) IN (SELECT ORIG_DATA_TYPE_ID, SERIAL_NUM FROM ORIGINAL_DATA_SEQUENCE_FILE WHERE SUBMITEE_ID =\'${rows[0].SUBMITTEE_ID}\')`, function(err, rows1, fields2){
+
+                                var evalGrade
+                                var dataQUAL = 0
+                                var jungQUAL = 0
+                                var totTup = 0
+                                var nullRatio = 0
+                                var dupTup = 0
+
+
+                                for(var j=0; j < numFiles; j++){
+
+                                    console.log(rows1[j])
+                                    dataQUAL = dataQUAL + rows1[j].DATA_QUALITY_GRADE
+                                    totTup = rows1[j].TOTAL_TUPLE_NUM
+                                    nullRatio = rows1[j].NULL_RATIO
+                                    dupTup =  rows1[j].DUPLICATE_TUPLE_NUM
+                                    var dupRatio = dupTup/totTup
+                                    var temp =totTup*( 1-(nullRatio*0.1)) * (1-dupRatio)
+                                    var tempjungQUAL = (temp / totTup) * 10 
+                                    jungQUAL = jungQUAL + tempjungQUAL
+
+                                }
+                                
+                                // jungQUAL = 10 *  (dupTup/totTup) * ((1-nullRatio)*totTup)
+                                evalGrade = (dataQUAL+ jungQUAL) / numFiles
+                                console.log(evalGrade)
+                                console.log(`UPDATE ACCOUNT SET EVALUATION_GRADE = \'${evalGrade}\' WHERE ID = \'${rows[0].SUBMITTEE_ID}\'`)
+                                
+                                mariadb.query(`UPDATE ACCOUNT SET EVALUATION_GRADE = \'${evalGrade}\' WHERE ID = \'${rows[0].SUBMITTEE_ID}\'`, function(err, rows, fields){
+                                    if(err){
+
+                                        res.json(response)
+                                    }
+                                });
+
+                            })
+
+
+                        }
+                    } else {
+                        res.send(false)
+                    }
+                })
+
+            } else {
+                params.assessAll = false
+            }
+            res.send(response)
+        } else {[
+            res.send(false)
+        ]}
+    })
+});
 
 module.exports = router;
