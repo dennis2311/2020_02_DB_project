@@ -24,7 +24,7 @@
     <div v-for="(task, index) in tasks_YSUB" :key="task" :index="index">
         <h4>{{index + 1}}번째 요청) 태스크: {{task[0]}}, 제출자: {{task[1]}},  평가 점수: {{task[2]}}
         <input type="checkbox" :name="index" :id="index" :value="task" v-model="accept_task">승인
-        <input type="checTATTASKkbox" :name="index" :id="index" :value="task" v-model="reject_task">거절
+        <input type="checkbox" :name="index" :id="index" :value="task" v-model="reject_task">거절
         </h4>
     </div>
     <button v-on:click="submit_accept">제출</button>
