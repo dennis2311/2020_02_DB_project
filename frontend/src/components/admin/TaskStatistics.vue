@@ -43,6 +43,12 @@
     <button v-on:click="case6">태스크 목록 확인</button>
     </h5>
 
+    <h5>태스크:
+    <select v-model="task_dt_download">
+        <option v-for="task in task_names" :key="task">{{task}}</option>
+    </select>
+    <button v-on:click="case7">태스크 데이터 테이블 튜플 다운로드</button>
+    </h5>
 </div>
 </template>
 
@@ -83,7 +89,8 @@ export default {
             orgdt_file_num : null,
             orgdt_count_tuple : null,
             sub_per_task : null,
-            task_per_sub : null
+            task_per_sub : null,
+            task_dt_download : null,
         }
     },
 
@@ -97,6 +104,7 @@ export default {
             this.orgdt_count_tuple = null
             this.sub_per_task = null
             this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -104,7 +112,8 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)
@@ -119,6 +128,7 @@ export default {
             this.orgdt_count_tuple = null
             this.sub_per_task = null
             this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -126,7 +136,8 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)
@@ -141,6 +152,7 @@ export default {
             this.orgdt_count_tuple = null
             this.sub_per_task = null
             this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -148,7 +160,8 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub ,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)
@@ -163,6 +176,7 @@ export default {
             // this.orgdt_count_tuple = null
             this.sub_per_task = null
             this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -170,7 +184,8 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub ,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)
@@ -185,6 +200,7 @@ export default {
             this.orgdt_count_tuple = null
             // this.sub_per_task = null
             this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -192,7 +208,8 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub ,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)
@@ -207,6 +224,7 @@ export default {
             this.orgdt_count_tuple = null
             this.sub_per_task = null
             // this.task_per_sub = null
+            this.task_dt_download = null,
             this.$http.post("/api/admin/taskstatistics_click",{
                 req_case : this.req_case,
                 task_file_num : this.task_file_num,
@@ -214,7 +232,32 @@ export default {
                 orgdt_file_num : this.orgdt_file_num,
                 orgdt_count_tuple : this.orgdt_count_tuple,
                 sub_per_task : this.sub_per_task,
-                task_per_sub : this.task_per_sub 
+                task_per_sub : this.task_per_sub ,
+                task_dt_download : this.task_dt_download
+            })
+            .then(res => {
+                alert(res.data.message)
+            })
+        },
+        case7(){
+            event.preventDefault();
+            this.req_case = 7
+            this.task_file_num = null
+            this.task_count_tuple = null
+            this.orgdt_file_num = null
+            this.orgdt_count_tuple = null
+            this.sub_per_task = null
+            this.task_per_sub = null
+            // this.task_dt_download = null,
+            this.$http.post("/api/admin/taskstatistics_click",{
+                req_case : this.req_case,
+                task_file_num : this.task_file_num,
+                task_count_tuple : this.task_count_tuple,
+                orgdt_file_num : this.orgdt_file_num,
+                orgdt_count_tuple : this.orgdt_count_tuple,
+                sub_per_task : this.sub_per_task,
+                task_per_sub : this.task_per_sub ,
+                task_dt_download : this.task_dt_download
             })
             .then(res => {
                 alert(res.data.message)

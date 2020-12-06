@@ -225,6 +225,8 @@ router.post('/taskstatistics_click', function(req, res, next){
     const orgdt_count_tuple = req.body.orgdt_count_tuple //ORGDT ID(STRING)
     const sub_per_task = req.body.sub_per_task //TASK NAME(STRING)
     const task_per_sub = req.body.task_per_sub //SUB ID(STRING)
+    const task_dt_download = req.body.task_dt_download //TASK NAME(STRING)
+    const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
     var response = {
         message : "서버 오류입니다. 문제가 계속되는 경우 관리자에게 문의하세요.",
@@ -234,9 +236,9 @@ router.post('/taskstatistics_click', function(req, res, next){
     var variable = []
     if (req_case == 1){
         // num of file for task
-        qry = "SELECT COUNT(SERIAL_NUM) AS SN_COUNT \
-        FROM ORIGINAL_DATA_TYPE AS ODT, ORIGINAL_DATA_SEQUENCE_FILE \
-        WHERE ORIG_DATA_TYPE_ID=ODT.ID AND TASK_NAME=?"
+        qry = "SELECT COUNT(ID) AS SN_COUNT \
+        FROM PARSING_DATA_SEQUENCE_FILE \
+        WHERE TASK_NAME=?"
         variable = [task_file_num]
         mariadb.query(qry, variable, function(err, rows, feilds){
             response.message = rows[0].SN_COUNT
@@ -261,7 +263,7 @@ router.post('/taskstatistics_click', function(req, res, next){
     } else if (req_case == 3){
         // num of file for ORGDT
         qry = `SELECT COUNT(SERIAL_NUM) AS SN_COUNT \
-        FROM ORIGINAL_DATA_SEQUENCE_FILE \
+        FROM PARSING_DATA_SEQUENCE_FILE \
         WHERE ORIG_DATA_TYPE_ID=?`
         variable = [orgdt_file_num]
         mariadb.query(qry, variable, function(err, rows, feilds){
@@ -307,6 +309,32 @@ router.post('/taskstatistics_click', function(req, res, next){
                 response.message = "참여 태스크 없음"
             }
             res.send(response)
+        })
+    } else if (req_case == 7){
+        // task per submitee
+        // get task data table name
+        qry1 = `SELECT TASK_TABLE_NAME FROM TASK WHERE NAME=?`
+        // select task data table
+        qry2 = `SELECT * FROM `
+        variable = [task_dt_download]
+        console.log(task_dt_download)
+        mariadb.query(qry1, variable, function(err, rows, fields){
+            mariadb.query('SELECT ID FROM ' + rows[0].TASK_TABLE_NAME, function(err, rows, fields){
+                if(!err){
+                    
+                    response.message = "'output.csv'로 저장되었습니다"
+                    if(rows[0] == null){
+                        response.message = "저장할 태스크 없음"
+                    }
+                    // for(var i=0; i<rows.length; i++){
+                        
+                    // }
+                    res.send(response)
+                } else {
+                    console.log(err)
+                    res.send(response)
+                }
+            })
         })
     }
 })
