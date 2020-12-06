@@ -113,9 +113,9 @@ router.post('/submonitor', function(req, res, next) {
             response.tasks.push(rows1)
             // res.send(rows1)
 
-            for(var i=0; i< rows1.length; i++){
+            // for(var i=0; i< rows1.length; i++){
                 // console.log(i)
-                var taskName = rows1[rows1.length-i-1].NAME
+                var taskName = rows1[0].NAME
                 // console.log(taskName)
                 console.log(`SELECT COUNT(SERIAL_NUM) FROM ORIGINAL_DATA_SEQUENCE_FILE WHERE SUBMITEE_ID = \'${params.userid}\' AND ORIG_DATA_TYPE_ID IN (SELECT ID FROM ORIGINAL_DATA_TYPE WHERE TASK_NAME = \'${taskName}\')`)                        
                 var taskNAME = taskName
@@ -170,7 +170,7 @@ router.post('/submonitor', function(req, res, next) {
                         res.send('erro' + err)
                     }
                 })
-            }
+            // }
         } else {    
             res.send('erro' + err)
         }
