@@ -12,7 +12,7 @@ router.get('/parsingevaluate/:userid', function(req, res, next){
  
     const userid = req.params.userid
 
-    mariadb.query(`SELECT ID, ORIGINAL_DATA_TYPE_ID, TASK_NAME, TOTAL_TUPLE_NUM, NULL_RATIO, DUPLICATE_TUPLE_NUM FROM PARSING_DATA_SEQUENCE_FILE WHERE ASSESSOR_ID = \'${userid}\' AND EVALUATION_STATE = 0`, function(err, rows, fields){
+    mariadb.query(`SELECT P.ID, O.NAME, P.TASK_NAME, P.TOTAL_TUPLE_NUM, P.NULL_RATIO, P.DUPLICATE_TUPLE_NUM FROM PARSING_DATA_SEQUENCE_FILE AS P, ORIGINAL_DATA_TYPE AS O WHERE P.ASSESSOR_ID = \'${userid}\' AND P.EVALUATION_STATE = 0 AND P.ORIGINAL_DATA_TYPE_ID = O.ID`, function(err, rows, fields){
         if(!err){
             res.send(JSON.stringify(rows))
         } else {
