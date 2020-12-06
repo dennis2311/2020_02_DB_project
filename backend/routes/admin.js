@@ -324,9 +324,9 @@ router.post('/taskstatistics_click', function(req, res, next){
         })
     } else if (req_case == 3){
         // num of file for ORGDT
-        qry = `SELECT COUNT(SERIAL_NUM) AS SN_COUNT \
+        qry = `SELECT COUNT(ID) AS SN_COUNT \
         FROM PARSING_DATA_SEQUENCE_FILE \
-        WHERE ORIG_DATA_TYPE_ID=?`
+        WHERE ORIGINAL_DATA_TYPE_ID=?`
         variable = [orgdt_file_num]
         mariadb.query(qry, variable, function(err, rows, feilds){
             response.message = rows[0].SN_COUNT
@@ -339,7 +339,7 @@ router.post('/taskstatistics_click', function(req, res, next){
         // passed & saved number of tuple for ORDGT
         qry = `SELECT SUM(TOTAL_TUPLE_NUM) AS SUM_TTN \
         FROM PARSING_DATA_SEQUENCE_FILE \
-        WHERE ORIGINAL_DATA_TYPE_ID=? AND STORE_CONDITION="P"`
+        WHERE ORIGINAL_DATA_TYPE_ID=? AND STORE_CONDITION="NP"`
         variable = [orgdt_count_tuple]
         mariadb.query(qry, variable, function(err, rows, feilds){
             response.message = rows[0].SUM_TTN
@@ -376,27 +376,51 @@ router.post('/taskstatistics_click', function(req, res, next){
         // task per submitee
         // get task data table name
         qry1 = `SELECT TASK_TABLE_NAME FROM TASK WHERE NAME=?`
-        // select task data table
-        qry2 = `SELECT * FROM `
+
         variable = [task_dt_download]
-        console.log(task_dt_download)
+
         mariadb.query(qry1, variable, function(err, rows, fields){
-            mariadb.query('SELECT ID FROM ' + rows[0].TASK_TABLE_NAME, function(err, rows, fields){
-                if(!err){
-                    
-                    response.message = "'output.csv'로 저장되었습니다"
-                    if(rows[0] == null){
-                        response.message = "저장할 태스크 없음"
+            if(rows == null){
+                res.send(response)
+            }
+            else{
+                mariadb.query('SELECT * FROM ' + rows[0].TASK_TABLE_NAME, function(err, rows, fields){
+                    if(!err){
+                        if(rows[0] == null){
+                            response.message = "저장할 태스크 없음"
+                            res.send(response)
+                        }
+                        else{
+                            var keys = Object.keys(rows[0]);
+                            var header_list = []
+                            for (var i = 0; i < keys.length; i++) {
+                                header_list.push({id: keys[i], title: keys[i]})
+                            }
+                            
+                            const csvWriter = createCsvWriter({
+                                path: 'output.csv',
+                                header: header_list
+                            });
+
+                            var data_list = []
+                            for (var i=0; i< rows.length; i++){
+                                data_list.push(JSON.parse(JSON.stringify(rows[i])))
+                            }
+                            const data = data_list;
+
+                            response.message = "'output.csv'로 저장되었습니다"
+                            
+                            csvWriter
+                            .writeRecords(data)
+                            .then(()=> console.log('The CSV file was written successfully'));
+                            res.send(response)
+                        }
+                    } 
+                    else{
+                        res.send(response)
                     }
-                    // for(var i=0; i<rows.length; i++){
-                        
-                    // }
-                    res.send(response)
-                } else {
-                    console.log(err)
-                    res.send(response)
-                }
-            })
+                })
+            }
         })
     }
 })
