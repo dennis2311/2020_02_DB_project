@@ -82,6 +82,16 @@ router.get('/membermanage_task', function(req, res, next) {
     });
 });
 
+router.get('/membermanage_taskname', function(req, res, next) {    
+    mariadb.query(`SELECT NAME FROM TASK;`, function(err, rows, fields){
+        if(!err){
+            res.send(JSON.stringify(rows))
+        } else {
+            res.send(false)
+        }
+    });
+})
+
 router.get('/membermanage/:id', function(req, res, next){
     mariadb.query(`SELECT NAME, ID, BIRTHDATE, GENDER, ADDRESS, PHONE, ROLE, EVALUATION_GRADE FROM ACCOUNT WHERE ID=\'${req.params.id}\';`, function(err,rows,fields){
         if(!err){
