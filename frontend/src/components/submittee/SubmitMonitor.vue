@@ -3,17 +3,14 @@
 <div>
     <h3>제출 현황 모니터링 및 평가 점수 확인 페이지</h3>
     <div>
-        <h1> ID : {{id}} </h1>
-        <h5>   현재 평가 점수 : {{evalGrade[0]}} </h5>
+        <h4> ID : {{id}} </h4>
+        <h3>   현재 평가 점수 : {{evalGrade[0]}} </h3>
     </div>
             
     <div>
-        <!-- <h1> {{tasks}} </h1> -->
+
         <h5 > 현재 참여 중인 태스크의 현황 보기 </h5>
-        <!-- <h5 >{{fileNumByTask}} </h5>
-        {{tasks}}
-        <h5 >{{orgFilePresent}}</h5>
-        <h5 >{{PDSFFilePresend}}</h5> -->
+
         <div v-for="(task, index) in tasks" v-bind:key="task">
             <h2 > {{index+1}}. 태스크 이름 : {{task[index].NAME}} </h2>
 
@@ -45,7 +42,7 @@
                                         </tr>
                                 </tbody>
                     </table>
-                    <!-- {{PDSFFilePresend}} -->
+
                     <div v-for="(aPDSFFilePresend) in PDSFFilePresend" v-bind:key="aPDSFFilePresend">
                         <div v-for="(aaPDSFFilePresend) in aPDSFFilePresend" v-bind:key="aaPDSFFilePresend">
                         <table class='table table-dark' border='2px'>
@@ -88,7 +85,6 @@
                                                 </tr>
                                         </tbody>
                         </table>
-                        <!-- {{aPDSFFilePresend}} -->
                     </div>
                 </div>
         </div>
@@ -147,9 +143,7 @@ export default {
     },
 
     methods:{
-        // doneToggle : function(id){
-        //     var index
-        // }
+
         getTaskFile() {
             this.$http.post(`/api/submittee/submonitor`,{
                 params:this.params

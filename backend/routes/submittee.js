@@ -91,13 +91,10 @@ router.post('/submonitor', function(req, res, next) {
     mariadb.query(`SELECT EVALUATION_GRADE FROM ACCOUNT where ID = \'${params.userid}\'`, function(err, rows, fields){
 
 
-        // console.log(`SELECT EVALUATION_GRADE FROM ACCOUNT where ID = \'${params.userid}\'`)
         if(!err){
             console.log(rows)
             response.evalGrade.push(rows[0].EVALUATION_GRADE)
-            // res.send(JSON.stringify(rows[0].EVALUATION_GRADE))
-            // console.log(`SELECT NAME FROM TASK WHERE TASK.NAME IN (SELECT TASK_NAME FROM PARTICIPATES_IN WHERE PARTICIPATES_IN.SUBMITEE_ID =\'${params.userid}\' AND PARTICIPATES_IN.APPROVED =1);`)
-
+            
         } else {
 
             res.send('erro' + err)
@@ -105,27 +102,36 @@ router.post('/submonitor', function(req, res, next) {
 
     })
 
+    var taskS = []
+
     mariadb.query(`SELECT NAME FROM TASK WHERE TASK.NAME IN (SELECT TASK_NAME FROM PARTICIPATES_IN WHERE PARTICIPATES_IN.SUBMITEE_ID =\'${params.userid}\' AND PARTICIPATES_IN.APPROVED =1);`, function(err, rows1, fields1){
 
-        // console.log(`SELECT EVALUATION_GRADE FROM ACCOUNT where ID = \'${params.userid}\'`)
+        if(!err){
+            taskS = rows1
+            console.log(taskS)
+            console.log(rows1)
+            response.tasks.push(rows1)
+        } else {
+            res.send('erro' + err)
+        }
+    })
+
+    mariadb.query(`SELECT NAME FROM TASK WHERE TASK.NAME IN (SELECT TASK_NAME FROM PARTICIPATES_IN WHERE PARTICIPATES_IN.SUBMITEE_ID =\'${params.userid}\' AND PARTICIPATES_IN.APPROVED =1);`, function(err, rows1, fields1){
+
         if(!err){
             console.log(rows1)
             response.tasks.push(rows1)
-            // res.send(rows1)
-
+       
             // for(var i=0; i< rows1.length; i++){
-                // console.log(i)
-                var taskName = rows1[0].NAME
-                // console.log(taskName)
+                
+                var taskName = taskS[0].NAME
+                console.log(taskName)
                 console.log(`SELECT COUNT(SERIAL_NUM) FROM ORIGINAL_DATA_SEQUENCE_FILE WHERE SUBMITEE_ID = \'${params.userid}\' AND ORIG_DATA_TYPE_ID IN (SELECT ID FROM ORIGINAL_DATA_TYPE WHERE TASK_NAME = \'${taskName}\')`)                        
-                var taskNAME = taskName
 
                 mariadb.query(`SELECT COUNT(SERIAL_NUM) FROM ORIGINAL_DATA_SEQUENCE_FILE WHERE SUBMITEE_ID = \'${params.userid}\' AND ORIG_DATA_TYPE_ID IN (SELECT ID FROM ORIGINAL_DATA_TYPE WHERE TASK_NAME = \'${taskName}\')`, function(err, rows2, fields2){
                     if(!err){
                         console.log(`SELECT COUNT(SERIAL_NUM) FROM ORIGINAL_DATA_SEQUENCE_FILE WHERE SUBMITEE_ID = \'${params.userid}\' AND ORIG_DATA_TYPE_ID IN (SELECT ID FROM ORIGINAL_DATA_TYPE WHERE TASK_NAME = \'${taskName}\')`)
                         console.log(rows2)
-                        // console.log(params.userid)
-                        // console.log(taskName)
                         response.fileNumByTask.push(rows2)
   
                         mariadb.query(`SELECT SUM(TOTAL_TUPLE_NUM) FROM PARSING_DATA_SEQUENCE_FILE WHERE TASK_NAME = \'${taskName}\' AND SUBMITTEE_ID = \'${params.userid}\' AND STORE_CONDITION = 'P'`, function(err, rows3, fields3){ //submittee
@@ -179,5 +185,6 @@ router.post('/submonitor', function(req, res, next) {
     
 
 });
+
 
 module.exports = router;
